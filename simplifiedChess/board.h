@@ -31,28 +31,30 @@
 
 #define RF(rank, file) (((rank)*8) + (file))
 
-struct Board{
+typedef struct{
     int squares[64];
-    int color;
-    int lostPawns_black;
-    int lostRooks_black;
-    int lostBishops_black;
-    int lostKnights_black;
-    int lostQueens_black;
-    int lostKings_black;
-    int lostPawns_white;
-    int lostRooks_white;
-    int lostBishops_white;
-    int lostKnights_white;
-    int lostQueens_white;
-    int lostKings_white;
- 
-};
+    int color; //Indicates who's move it is
+    unsigned char lostPawns_black;
+    unsigned char lostRooks_black;
+    unsigned char lostBishops_black;
+    unsigned char lostKnights_black;
+    unsigned char lostQueens_black;
+    unsigned char lostKings_black;
+    unsigned char lostPawns_white;
+    unsigned char lostRooks_white;
+    unsigned char lostBishops_white;
+    unsigned char lostKnights_white;
+    unsigned char lostQueens_white;
+    unsigned char lostKings_white;
 
-void board_clear(struct Board *board);
-void board_reset(struct Board *board);
-void board_set(struct Board *board, int sq, int piece);
-void board_print(struct Board *board);
+    unsigned char moveNumber;   //indicates what move is currently being made
+ 
+} Board;
+
+void board_clear(Board *board);
+void board_reset(Board *board);
+void board_set(Board *board, int sq, int piece);
+void board_print(Board *board);
 //void board_load_fen(Board *board, char *fen);
 
 #endif

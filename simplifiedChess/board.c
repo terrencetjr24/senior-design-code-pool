@@ -2,11 +2,11 @@
 #include <string.h>
 #include "board.h"
 
-void board_clear(struct Board *board) {
-    memset(board, 0, sizeof(struct Board));
+void board_clear(Board *board) {
+    memset(board, 0, sizeof(Board));
 }
 
-void board_reset(struct Board *board) {
+void board_reset(Board *board) {
     board_clear(board);
     for (int file = 0; file < 8; file++) {
         board_set(board, RF(1, file), WHITE_PAWN);
@@ -30,7 +30,7 @@ void board_reset(struct Board *board) {
     board_set(board, RF(7, 7), BLACK_ROOK);
 }
 
-void board_set(struct Board *board, int sq, int piece) {
+void board_set(Board *board, int sq, int piece) {
     //Save the previous piece and move current piece there
     int previousPiece = board->squares[sq];
     board->squares[sq] = piece;
@@ -89,7 +89,7 @@ void board_set(struct Board *board, int sq, int piece) {
 
 }
 
-void board_print(struct Board *board) {
+void board_print(Board *board) {
     for (int rank = 7; rank >= 0; rank--) {
         for (int file = 0; file < 8; file++) {
             char c;
