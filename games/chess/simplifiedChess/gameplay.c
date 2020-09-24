@@ -8,11 +8,7 @@ int playGame(Board* board, Move * currentMove){
     int winner = 99; // 1 = black -- 0 = white
     int userInput;
     gameState state = waitingForFirst;
-
-
-    int source = -1;
-    int destination = -1;
-    int selectedPiece;
+    Move * nextMove = malloc(sizeof(Move));
     int * validMoves;
 
     int lengthOfList;
@@ -25,11 +21,12 @@ int playGame(Board* board, Move * currentMove){
             switch (state){
                 case waitingForFirst:
                     printf("first input\n");
-                    source = userInput;
-                    selectedPiece = validSelection(board, source);
+                    nextMove->src = userInput;
+                    nextMove->piece = validSelection(board, userInput);
+                    nextMove->promotion = 0;
 
-                    if (selectedPiece){
-                        validMoves = findValidMoves(board, source, (unsigned char)selectedPiece);
+                    if (nextMove->piece){
+                        validMoves = findValidMoves(board, userInput, (unsigned char)(nextMove->piece));
                         if (validMoves == NULL){
                             printf("no possible moves, try again\n");
                             break;
@@ -43,24 +40,46 @@ int playGame(Board* board, Move * currentMove){
 
                 case waitingForSecond:
                     printf("second input\n");
-                    destination = userInput;
+                    nextMove->dst = userInput;
                     lengthOfList = sizeof(validMoves) / sizeof(int);
                     for(index = 0; index < lengthOfList; index++){
-                        if (destination == validMoves[index])
+                        if (userInput == validMoves[index])
                             break;
                     }
                     if (index == lengthOfList){
                         printf("Invalid selection made, try again\n");
                     }
+                    else if(PIECE(nextMove->piece) == PAWN && ((COLOR(board->color) && userInput < 8) || (!COLOR(board->color) && userInput > 55))) {
+                        //promotion
+                        state = waitingForThird;
+                    }
                     else{
                         // make the desired move
+                        do_move(board, nextMove);
                         // Saving the move into currentMove
-                        // creating another Move node, linking it and the currentMove, and assigning current move to the new empty node
-                        // Reset source and destination to -1
+                        currentMove->next = nextMove;
+                        nextMove->prev = currentMove;
+                        currentMove = nextMove;
+                        nextMove = NULL;
                         // Then free the valid move list
+                        free(validMoves);
                     }
                     break;
-                    
+                
+                case waitingForThird:
+                    printf("promotion input\n");
+                    nextMove->promotion = userInput;
+
+                    // make the desired move
+                    do_move(board, nextMove);
+                    // creating another Move node, linking it and the currentMove, and assigning current move to the new empty node
+                    currentMove->next = nextMove;
+                    nextMove->prev = currentMove;
+                    currentMove = nextMove;
+                    currentMove->next = malloc(sizeof(Move));
+                    nextMove = currentMove->next;
+                    // Then free the valid move list
+                    free(validMoves);
                 default:
                     printf("invalid state. Exitting\n");
                     exit(0);
@@ -70,8 +89,10 @@ int playGame(Board* board, Move * currentMove){
         else if (userInput == 64){
             // If the first selection has already been recieved, then we'll respond to this request
             if (state == waitingForSecond){
-                // Reset source and destination to -1
                 // Then free the valid move list
+                free(validMoves);
+                // Change state back to first
+                state = waitingForFirst;
             }
         }
         // User wants to undo the entire previous move

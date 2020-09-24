@@ -8,14 +8,11 @@
 
 
 
-typedef struct {
+typedef struct Move {
     unsigned char src;
     unsigned char dst;
+    unsigned char piece;
     unsigned char promotion;
-    unsigned char captured;
-    unsigned char castle;
-    unsigned char playerColor;
-
     unsigned char moveNumber;
 
     struct Move * prev;
@@ -30,11 +27,12 @@ typedef struct {
 
 int* findValidMoves(Board* board, int location, unsigned char piece);
 int validSelection(Board *board, int location);
+void freeMoves(Move * move);
 
 void make_move(Board *board, Move *move);
 void do_null_move(Board *board, Undo *undo);
 void undo_null_move(Board *board, Undo *undo);
-void do_move(Board *board, Move *move, Undo *undo);
+void do_move(Board *board, Move *move/*, Undo *undo*/);
 void undo_move(Board *board, Move *move, Undo *undo);
 int score_move(Board *board, Move *move);
 

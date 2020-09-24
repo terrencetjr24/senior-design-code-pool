@@ -29,11 +29,20 @@
 #define PIECE(x) ((x) & 0x0f)
 #define COLOR(x) ((x) & 0x10)
 
+#define CASTLE_ALL 15
+#define CASTLE_WHITE 3
+#define CASTLE_BLACK 12
+#define CASTLE_WHITE_KING 1
+#define CASTLE_WHITE_QUEEN 2
+#define CASTLE_BLACK_KING 4
+#define CASTLE_BLACK_QUEEN 8
+
 #define RF(rank, file) (((rank)*8) + (file))
 
 typedef struct{
     int squares[64];
     int color; //Indicates who's move it is
+    int castle; //Indicates castling privileges of both sides
     unsigned char lostPawns_black;
     unsigned char lostRooks_black;
     unsigned char lostBishops_black;

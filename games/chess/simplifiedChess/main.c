@@ -12,7 +12,8 @@ int main(int argc, char **argv) {
         printf("Failed to allocate memory\n");
     }
     
-    //Move* firstMove = malloc(sizeof(Move));
+    Move* firstMove = malloc(sizeof(Move));
+    //Undo* firstUndo = malloc(sizeof(Undo));
 
     board_clear(board);
     board_reset(board);
@@ -22,18 +23,19 @@ int main(int argc, char **argv) {
     
     // Game loop
     while(1){
-        //result = playGame(board, firstMove);
+        result = playGame(board, firstMove);
         if (result == 1){
             printf("Black won!!\n");
         }
         else if (result == 0){
-            printf("WHite won!!\n");
+            printf("White won!!\n");
         }
         else{
-            printf("Something went wrong. Exitting");
+            printf("Something went wrong. Exiting");
             break;
         }
     }
     free(board);
+    freeMoves(firstMove);
     return 0;
 }
