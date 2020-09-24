@@ -10,11 +10,11 @@ int playGame(Board* board, Move * currentMove);
 
 
 
-void nextMove(Board* board, );
+void nextMove(Board* board);
 void undoLastMove();
 
 
 //   Microcontroller speciic functions to interface between game and microcontroller
 int getInput();
 
-#endif GAMEPLAY
+#endif

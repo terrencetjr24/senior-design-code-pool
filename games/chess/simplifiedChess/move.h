@@ -28,7 +28,8 @@ typedef struct {
     unsigned char castle;
 } Undo;
 
-int validSelection(Board *board, Move *move);
+int* findValidMoves(Board* board, int location, unsigned char piece);
+int validSelection(Board *board, int location);
 
 void make_move(Board *board, Move *move);
 void do_null_move(Board *board, Undo *undo);
