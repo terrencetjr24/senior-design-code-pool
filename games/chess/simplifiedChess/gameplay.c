@@ -50,7 +50,7 @@ int playGame(Board* board, Move * currentMove){
                             break;
                     }
                     if (index == lengthOfList){
-                        print("Invalid selection made, try again\n");
+                        printf("Invalid selection made, try again\n");
                     }
                     else{
                         // make the desired move
@@ -97,7 +97,7 @@ int playGame(Board* board, Move * currentMove){
 }
 
 
-void nextMove(){
+void nextMove(Board * board){
 
 }
 

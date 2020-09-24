@@ -20,7 +20,7 @@ int validSelection(Board *board, int location){
 // Returns: 1 if is pinning, 0 if not pinning
 */
 unsigned char isPinningKing(Board* board, int location){
-
+    return 0;
 }
 
 /*  Function for taking in the location selected and the piece and telling the user where it can move
@@ -30,10 +30,10 @@ unsigned char isPinningKing(Board* board, int location){
 // Returns: The code of the piece that is moveable 
 */
 int* findValidMoves(Board* board, int location, unsigned char piece){
-    
+    return 0;
 }
 
 void make_move(Board *board, Move *move) {
-    Undo undo; // throw-away
-    do_move(board, move, &undo);
+    //Undo undo; // throw-away
+    //do_move(board, move, &undo);
 }
