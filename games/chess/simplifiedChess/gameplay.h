@@ -7,7 +7,7 @@
 typedef enum gameState {waitingForFirst, waitingForSecond, waitingForThird} gameState;
 
 int playGame(Board* board, Move * currentMove);
-
+int isCheckmate(Board * board);
 
 
 void nextMove(Board* board);

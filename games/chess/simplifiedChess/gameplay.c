@@ -15,12 +15,17 @@ int playGame(Board* board, Move * currentMove){
     int index;
 
     while (currentMove->moveNumber < MAX_MOVES){
+        //check for checkmate
+        if(isCheckmate(board)) {
+            winner = !(board->color);
+            break;
+        }
         userInput = getInput();
         // user is selecting the board
         if (userInput >= 0 && userInput < 64){
             switch (state){
                 case waitingForFirst:
-                    printf("first input\n");
+                    printf("piece selection: %d\n", userInput);
                     nextMove->src = userInput;
                     nextMove->piece = validSelection(board, userInput);
                     nextMove->promotion = 0;
@@ -39,7 +44,7 @@ int playGame(Board* board, Move * currentMove){
                     break;
 
                 case waitingForSecond:
-                    printf("second input\n");
+                    printf("movement selection: %d\n", userInput);
                     nextMove->dst = userInput;
                     lengthOfList = sizeof(validMoves) / sizeof(int);
                     for(index = 0; index < lengthOfList; index++){
@@ -67,7 +72,7 @@ int playGame(Board* board, Move * currentMove){
                     break;
                 
                 case waitingForThird:
-                    printf("promotion input\n");
+                    printf("promotion input: %d\n", userInput);
                     nextMove->promotion = userInput;
 
                     // make the desired move
@@ -112,6 +117,8 @@ int playGame(Board* board, Move * currentMove){
                 winner = 1;
             break;
         }
+
+        board->color = !(board->color);
     }
 
     return winner;
@@ -126,6 +133,10 @@ void undoLastMove(){
 
 }
 
+int isCheckmate(Board * board) {
+    return 0;
+}
+
 //////////////////////////////////////////////////////
 // Microcontroller Functions
 //////////////////////////////////////////////////////
@@ -138,9 +149,14 @@ void undoLastMove(){
 // 
 */
 int getInput(){
-    int value;
+    int value = -1;
+    printf("Enter a # between 0 and 66\n");
+    scanf("%d", &value);
 
-    value = 8; //Just for testing
+    while(value < 0 || value > 66){
+        printf("Enter a # between 0 and 66\n");
+        scanf("%d", &value);
+    }
 
     return value;
 
