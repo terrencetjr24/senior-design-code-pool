@@ -21,7 +21,7 @@ int playGame(Board* board, Move * currentMove){
     while (currentMove->moveNumber < MAX_MOVES){
         userInput = getInput();
         // user is selecting the board
-        if (userInput > 0 && userInput < 64){
+        if (userInput >= 0 && userInput < 64){
             switch (state){
                 case waitingForFirst:
                     printf("first input\n");
@@ -83,6 +83,7 @@ int playGame(Board* board, Move * currentMove){
 
             // Now undo the entire previous move regardless
         }
+	// User wants to resign
         else if (userInput == 66){
             if (board->color)
                 winner = 0;
