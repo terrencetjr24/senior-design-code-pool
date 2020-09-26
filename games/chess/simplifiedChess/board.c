@@ -112,3 +112,21 @@ void board_print(Board *board) {
     }
     putchar('\n');
 }
+
+////////////////////////////////////////////////////////
+// Board Checking functions
+// 
+////////////////////////////////////////////////////////
+
+/* Function for determining the status of checkMate 
+//
+// Return: 1 for yes, 2 for no
+*/
+unsigned char isCheckMate(Board* board, Move* prevMove){
+
+
+}
+unsigned char isStaleMate(Board* board){
+
+
+}

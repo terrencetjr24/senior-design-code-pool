@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     board_reset(board);
     board_print(board);
 
-    int result = 2; //0 = white won -- 1 - black won
+    int result = 3; //0 = white won; 1 - black won; 2 - tie/stalemate
     
     // Game loop
     while(1){
@@ -29,7 +29,10 @@ int main(int argc, char **argv) {
             printf("Black won!!\n");
         }
         else if (result == 0){
-            printf("WHite won!!\n");
+            printf("White won!!\n");
+        }
+        else if (result == 2){
+            printf("Draw game...\n");
         }
         else{
             printf("Something went wrong. Exitting");
@@ -37,5 +40,7 @@ int main(int argc, char **argv) {
         }
     }
     free(board);
+    // Free the moveList
+
     return 0;
 }

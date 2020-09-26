@@ -12,11 +12,13 @@ typedef struct {
     unsigned char src;
     unsigned char dst;
     unsigned char promotion;
-    unsigned char captured;
-    unsigned char castle;
-    unsigned char playerColor;
+    unsigned char capturedPiece;
+    unsigned char castle; // Will use the board defined values to tell if it was queen side or king side
+    unsigned char playerColor;  // The color of the player who made the move (redundancy)
 
     unsigned char moveNumber;
+
+    unsigned char check; // 1 = check is given, 2 = check not given
 
     struct Move * prev;
     struct Move * next;
@@ -28,9 +30,16 @@ typedef struct {
     unsigned char castle;
 } Undo;
 
-int validSelection(Board *board, Move *move);
+int validSelection(Board *board, int location);
 
-void make_move(Board *board, Move *move);
+Move * newMoveNode(Move * currentMove, int src, int dst, int selectedPiece, int promotion);
+void makeMove(Board *board, Move *move);
+
+void undoHalfMove();
+Move * undoLastMove(Board* board, Move* prevMove);
+
+
+
 void do_null_move(Board *board, Undo *undo);
 void undo_null_move(Board *board, Undo *undo);
 void do_move(Board *board, Move *move, Undo *undo);

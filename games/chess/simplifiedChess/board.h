@@ -31,9 +31,20 @@
 
 #define RF(rank, file) (((rank)*8) + (file))
 
+//used for the board's castling privileges field
+#define CASTLE_ALL 15
+#define CASTLE_WHITE 3
+#define CASTLE_BLACK 12
+#define CASTLE_WHITE_KING 1
+#define CASTLE_WHITE_QUEEN 2
+#define CASTLE_BLACK_KING 4
+#define CASTLE_BLACK_QUEEN 8
+
 typedef struct{
     int squares[64];
     int color; //Indicates who's move it is
+    int castle; //Indicates castling privileges of both sides
+
     unsigned char lostPawns_black;
     unsigned char lostRooks_black;
     unsigned char lostBishops_black;
@@ -56,5 +67,8 @@ void board_reset(Board *board);
 void board_set(Board *board, int sq, int piece);
 void board_print(Board *board);
 //void board_load_fen(Board *board, char *fen);
+
+unsigned char isCheck(Board* board, Move* prevMove);
+unsigned char isStaleMate(Board* board);
 
 #endif
