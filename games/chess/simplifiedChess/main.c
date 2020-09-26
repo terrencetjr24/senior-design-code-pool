@@ -4,6 +4,8 @@
 #include "move.h"
 #include "gameplay.h"
 
+//test
+
 unsigned char moveNumber;
 
 int main(int argc, char **argv) {
