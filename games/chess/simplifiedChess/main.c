@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     }
     
     Move* firstMove = malloc(sizeof(Move));
+    //Undo* firstUndo = malloc(sizeof(Undo));
 
     board_clear(board);
     board_reset(board);
@@ -31,18 +32,25 @@ int main(int argc, char **argv) {
         }
         else if (result == 0){
             printf("White won!!\n");
+<<<<<<< HEAD
             break;
         }
         else if (result == 2){
             printf("Draw game...\n");
             break;
+=======
+>>>>>>> 87321697d9800e1d6e00a9a884d44fdb9195cc0a
         }
         else{
-            printf("Something went wrong. Exitting");
+            printf("Something went wrong. Exiting");
             break;
         }
     }
     free(board);
+<<<<<<< HEAD
     // Free the moveList (make function for this)
+=======
+    freeMoves(firstMove);
+>>>>>>> 87321697d9800e1d6e00a9a884d44fdb9195cc0a
     return 0;
 }
