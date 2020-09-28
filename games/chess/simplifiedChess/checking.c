@@ -19,6 +19,17 @@ int checkForCheckMate(Board *board, Move* currentMove){
     return -1;
 }
 
+/* Function for checking if there is a check
+// 
+// 0 = no check
+// 1 = there is a check
+//
+// Returns: winner value
+*/
+int isCheck(Board *board, Move* currentMove){
+    return 0;
+}
+
 /* Function for looking for stalemates
 //
 // -1 = no stalemate
