@@ -26,22 +26,22 @@ int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char pi
     int* moveList;
     switch(PIECE(piece)){
         case PAWN:
-            moveList = validPawnMoves(board, lastMove, location);
+            moveList = validPawnMoves(board, lastMove, location, lengthOfValidMoves);
             break;
         case KNIGHT:
-            moveList = validKnightMoves(board, lastMove, location);
+            moveList = validKnightMoves(board, lastMove, location, lengthOfValidMoves);
             break;
         case BISHOP:
-            moveList = validBishopMoves(board, lastMove, location);
+            moveList = validBishopMoves(board, lastMove, location, lengthOfValidMoves);
             break;
         case ROOK:
-            moveList = validRookMoves(board, lastMove, location);
+            moveList = validRookMoves(board, lastMove, location, lengthOfValidMoves);
             break;
         case QUEEN:
-            moveList = validQueenMoves(board, lastMove, location);
+            moveList = validQueenMoves(board, lastMove, location, lengthOfValidMoves);
             break;
         case KING:
-            moveList = validKingMoves(board, lastMove, location);
+            moveList = validKingMoves(board, lastMove, location, lengthOfValidMoves);
             break;
     }
 
@@ -53,28 +53,45 @@ int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char pi
 //
 // Returns: a list of locations that the pawn can move to
 */ 
-int* validPawnMoves(Board* board, Move* lastMove, int location){
+int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves){
+    // Holder array
     int moves[4] = {-1};
     int *retMoves;
-    int numMoves = 0;
+    *numOfMoves = 0;
+
+    unsigned char isPinned = 0; // 1 = vertical pin, 2 = non-vertical pin
+
+    // If the current player is white
     if(COLOR(board) == WHITE){
+        // if the pawn is on the home row
         if(location / 8 == 1){
             if(board->squares[location + 8] == EMPTY && board->squares[location + 16] == EMPTY){
-                moves[numMoves++] = location + 16;
+                moves[(*numOfMoves)++] = location + 16;
             }
         }
+        // Checking for en passant capture
         else if(location / 8 == 4) {
-            //en passant
+            
         }
+        // ALWAYS, checking directly in front of the pawn
         if(board->squares[location + 8] == EMPTY)  {
-            moves[numMoves++] = location + 8;
+            moves[(*numOfMoves)++] = location + 8;
         }
+
+        // Checking if the piece is pinned against the king
+            // If it's pinned it still may be able to move forward if it's a vertical pin 
+
+        // Checking the forward diagonals for capturable pieces
     }
-    retMoves = malloc(numMoves * sizeof(int));
-    for(int i = 0; i < 2; i++){
-        if(moves[i] != -1) {
-            retMoves[i] = moves[i];
-        }
+    // If the current player is black
+    else{
+
+    }
+
+    // Copy from holder array to the array being returned
+    retMoves = malloc((*numOfMoves) * sizeof(int));
+    for(int i = 0; i < *numOfMoves; i++){
+        retMoves[i] = moves[i];
     }
     return retMoves;
 }
@@ -84,7 +101,7 @@ int* validPawnMoves(Board* board, Move* lastMove, int location){
 //
 // Returns: a list of locations that the pawn can move to
 */ 
-int* validKnightMoves(Board* board, Move* lastMove, int location){
+int* validKnightMoves(Board* board, Move* lastMove, int location, int * numOfMoves){
     return NULL;
 }
 
@@ -93,7 +110,7 @@ int* validKnightMoves(Board* board, Move* lastMove, int location){
 //
 // Returns: a list of locations that the pawn can move to
 */ 
-int* validBishopMoves(Board* board, Move* lastMove, int location){
+int* validBishopMoves(Board* board, Move* lastMove, int location, int * numOfMoves){
     return NULL;
 }
 
@@ -102,7 +119,7 @@ int* validBishopMoves(Board* board, Move* lastMove, int location){
 //
 // Returns: a list of locations that the pawn can move to
 */ 
-int* validRookMoves(Board* board, Move* lastMove, int location){
+int* validRookMoves(Board* board, Move* lastMove, int location, int * numOfMoves){
     return NULL;
 }
 
@@ -111,7 +128,7 @@ int* validRookMoves(Board* board, Move* lastMove, int location){
 //
 // Returns: a list of locations that the pawn can move to
 */ 
-int* validQueenMoves(Board* board, Move* lastMove, int location){
+int* validQueenMoves(Board* board, Move* lastMove, int location, int * numOfMoves){
     return NULL;
 }
 
@@ -120,7 +137,7 @@ int* validQueenMoves(Board* board, Move* lastMove, int location){
 //
 // Returns: a list of locations that the pawn can move to
 */ 
-int* validKingMoves(Board* board, Move* lastMove, int location){
+int* validKingMoves(Board* board, Move* lastMove, int location, int * numOfMoves){
     return NULL;
 }
 

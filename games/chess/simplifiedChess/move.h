@@ -32,13 +32,13 @@ typedef struct {
 
 int validSelection(Board *board, int location);
 int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece, int * lengthOfValidMoves);
-int* validPawnMoves(Board* board, Move* lastMove, int location);
-int validatePawnMove(Board * board, int src, int dest);
-int* validKnightMoves(Board* board, Move* lastMove, int location);
-int* validBishopMoves(Board* board, Move* lastMove, int location);
-int* validRookMoves(Board* board, Move* lastMove, int location);
-int* validQueenMoves(Board* board, Move* lastMove, int location);
-int* validKingMoves(Board* board, Move* lastMove, int location);
+int* validPawnMoves(Board* board, Move* lastMove, int location, int * lengthOfValidMoves);
+int validatePawnMove(Board * board, int src, int dest, int * lengthOfValidMoves);
+int* validKnightMoves(Board* board, Move* lastMove, int location, int * lengthOfValidMoves);
+int* validBishopMoves(Board* board, Move* lastMove, int location, int * lengthOfValidMoves);
+int* validRookMoves(Board* board, Move* lastMove, int location, int * lengthOfValidMoves);
+int* validQueenMoves(Board* board, Move* lastMove, int location, int * lengthOfValidMoves);
+int* validKingMoves(Board* board, Move* lastMove, int location, int * lengthOfValidMoves);
 
 Move * newMoveNode(Move * currentMove, int src, int dst, int selectedPiece, int promotion);
 Move* makeMove(Board* board, Move* currentMove, int source, int destination, int selectedPiece, int promotion);
