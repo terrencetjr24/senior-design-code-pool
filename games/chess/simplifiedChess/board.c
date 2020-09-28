@@ -11,35 +11,31 @@ void board_clear(Board *board) {
 void board_reset(Board *board) {
     board_clear(board);
     for (int file = 0; file < 8; file++) {
-        board_set(board, RF(1, file), NO_SRC, WHITE_PAWN);
-        board_set(board, RF(6, file), NO_SRC, BLACK_PAWN);
+        board_set(board, RF(1, file), WHITE_PAWN);
+        board_set(board, RF(6, file), BLACK_PAWN);
     }
-    board_set(board, RF(0, 0), NO_SRC, WHITE_ROOK);
-    board_set(board, RF(0, 1), NO_SRC, WHITE_KNIGHT);
-    board_set(board, RF(0, 2), NO_SRC, WHITE_BISHOP);
-    board_set(board, RF(0, 3), NO_SRC, WHITE_QUEEN);
-    board_set(board, RF(0, 4), NO_SRC, WHITE_KING);
-    board_set(board, RF(0, 5), NO_SRC, WHITE_BISHOP);
-    board_set(board, RF(0, 6), NO_SRC, WHITE_KNIGHT);
-    board_set(board, RF(0, 7), NO_SRC, WHITE_ROOK);
-    board_set(board, RF(7, 0), NO_SRC, BLACK_ROOK);
-    board_set(board, RF(7, 1), NO_SRC, BLACK_KNIGHT);
-    board_set(board, RF(7, 2), NO_SRC, BLACK_BISHOP);
-    board_set(board, RF(7, 3), NO_SRC, BLACK_QUEEN);
-    board_set(board, RF(7, 4), NO_SRC, BLACK_KING);
-    board_set(board, RF(7, 5), NO_SRC, BLACK_BISHOP);
-    board_set(board, RF(7, 6), NO_SRC, BLACK_KNIGHT);
-    board_set(board, RF(7, 7), NO_SRC, BLACK_ROOK);
+    board_set(board, RF(0, 0), WHITE_ROOK);
+    board_set(board, RF(0, 1), WHITE_KNIGHT);
+    board_set(board, RF(0, 2), WHITE_BISHOP);
+    board_set(board, RF(0, 3), WHITE_QUEEN);
+    board_set(board, RF(0, 4), WHITE_KING);
+    board_set(board, RF(0, 5), WHITE_BISHOP);
+    board_set(board, RF(0, 6), WHITE_KNIGHT);
+    board_set(board, RF(0, 7), WHITE_ROOK);
+    board_set(board, RF(7, 0), BLACK_ROOK);
+    board_set(board, RF(7, 1), BLACK_KNIGHT);
+    board_set(board, RF(7, 2), BLACK_BISHOP);
+    board_set(board, RF(7, 3), BLACK_QUEEN);
+    board_set(board, RF(7, 4), BLACK_KING);
+    board_set(board, RF(7, 5), BLACK_BISHOP);
+    board_set(board, RF(7, 6), BLACK_KNIGHT);
+    board_set(board, RF(7, 7), BLACK_ROOK);
 }
 
-void board_set(Board *board, int src_sq, int dest_sq, int piece) {
+void board_set(Board *board, int dest_sq, int piece) {
     //Save the previous piece and move current piece there
     int previousPiece = board->squares[dest_sq];
     board->squares[dest_sq] = piece;
-
-
-    if (src_sq != -1)
-        board->squares[src_sq] = EMPTY;
 
     //If there was a piece
     if (previousPiece){

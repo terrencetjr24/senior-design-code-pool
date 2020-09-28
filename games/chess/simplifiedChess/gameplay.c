@@ -34,9 +34,10 @@ int playGame(Board* board, Move * currentMove){
                         validMoves = findValidMoves(board, currentMove, source, (unsigned char)selectedPiece);
                         if (validMoves == NULL){
                             printf("no possible moves, try again\n");
-                            break;
                         }
-                        state = waitingForSecond;
+                        else{
+                            state = waitingForSecond;
+                        }
                     }
                     else{
                         printf("Invalid Piece, try again\n");
@@ -52,10 +53,6 @@ int playGame(Board* board, Move * currentMove){
                     }
                     if (index == lengthOfList){
                         printf("Invalid selection made, try again\n");
-                    }
-                    else if(PIECE(selectedPiece) == PAWN && ((COLOR(board->color) && userInput < 8) || (!COLOR(board->color) && userInput > 55))) {
-                        //promotion
-                        state = waitingForThird;
                     }
                     // it's already being checked for a valid move, can simply check the piece and destination
                     else if(PIECE(selectedPiece) == PAWN && ((destination < 8) || (destination > 55))) {
@@ -93,8 +90,7 @@ int playGame(Board* board, Move * currentMove){
                     break;
                     
                 default:
-                    printf("invalid state. Exitting\n");
-                    exit(0);
+                    printf("invalid state or jumped into checking state too early\n");
             }
             // After every move these things will be checked
             if (state == checking){

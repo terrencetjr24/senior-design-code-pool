@@ -129,8 +129,10 @@ Move* makeMove(Board* board, Move* prevMove, int source, int destination, int se
         // Linking the newMoveNode to the end of lastMove
     newTailMove = newMoveNode(prevMove, source, destination, selectedPiece, promotion);
     
-    // calling board_set with the correct parameters 
-    board_set(board, source, destination, selectedPiece);
+    // calling board set to place a piece in the destination
+    board_set(board, destination, selectedPiece);
+    // calling board set to make the source location empty
+    board_set(board, source, EMPTY);
 
     return newTailMove;
 }

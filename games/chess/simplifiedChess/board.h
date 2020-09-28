@@ -71,7 +71,7 @@ typedef struct{
 
 void board_clear(Board *board);
 void board_reset(Board *board);
-void board_set(Board *board, int src_sq, int dest_sq, int piece);
+void board_set(Board *board, int dest_sq, int piece);
 void board_print(Board *board);
 
 #endif

@@ -15,7 +15,6 @@ int main(int argc, char **argv) {
     }
     
     Move* firstMove = malloc(sizeof(Move));
-    //Undo* firstUndo = malloc(sizeof(Undo));
 
     board_clear(board);
     board_reset(board);
