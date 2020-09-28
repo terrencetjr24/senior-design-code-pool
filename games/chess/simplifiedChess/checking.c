@@ -16,7 +16,7 @@
 // Returns: winner value
 */
 int checkForCheckMate(Board *board, Move* currentMove){
-
+    return 0;
 }
 
 /* Function for looking for stalemates
@@ -27,7 +27,7 @@ int checkForCheckMate(Board *board, Move* currentMove){
 // Returnn: winner value
 */
 int checkForStaleMate(Board* board, Move* currentMove){
-
+    return 0;
 }
 
 // Looking for castling priveleges
@@ -38,5 +38,5 @@ int checkForStaleMate(Board* board, Move* currentMove){
 // Returns: None
 */
 void checkForCastlingPriveleges(Board* board){
-
+    return;
 }

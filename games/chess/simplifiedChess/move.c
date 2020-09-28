@@ -64,7 +64,7 @@ int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char pi
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validPawnMoves(Board* board, Move* lastMove, int location){
-
+    return NULL;
 }
 
 /* Function for finding the valid moves for the Knight at the given location
@@ -73,7 +73,7 @@ int* validPawnMoves(Board* board, Move* lastMove, int location){
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validKnightMoves(Board* board, Move* lastMove, int location){
-
+    return NULL;
 }
 
 /* Function for finding the valid moves for the Bishop at the given location
@@ -82,7 +82,7 @@ int* validKnightMoves(Board* board, Move* lastMove, int location){
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validBishopMoves(Board* board, Move* lastMove, int location){
-
+    return NULL;
 }
 
 /* Function for finding the valid moves for the Rook at the given location
@@ -91,7 +91,7 @@ int* validBishopMoves(Board* board, Move* lastMove, int location){
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validRookMoves(Board* board, Move* lastMove, int location){
-
+    return NULL;
 }
 
 /* Function for finding the valid moves for the Queen at the given location
@@ -100,7 +100,7 @@ int* validRookMoves(Board* board, Move* lastMove, int location){
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validQueenMoves(Board* board, Move* lastMove, int location){
-
+    return NULL;
 }
 
 /* Function for finding the valid moves for the King at the given location
@@ -109,7 +109,7 @@ int* validQueenMoves(Board* board, Move* lastMove, int location){
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validKingMoves(Board* board, Move* lastMove, int location){
-
+    return NULL;
 }
 
 /* Function for executing the move stored in the move Node.
@@ -142,7 +142,7 @@ Move* makeMove(Board* board, Move* prevMove, int source, int destination, int se
 // Returns: a node that will be assigned to the next move in the linked list
 */
 Move * newMoveNode(Move * prevMove, int src, int dst, int selectedPiece, int promotion){
-
+    return NULL;
 }
 
 /* Function to undo the entire last move and return the previous 
@@ -152,12 +152,12 @@ Move * newMoveNode(Move * prevMove, int src, int dst, int selectedPiece, int pro
 */
 
 Move* undoLastMove(Board* board, Move* prevMove){
-
+    return NULL;
 }
 
 /*  Utility function
 // Returns: 1 if is pinning, 0 if not pinning
 */
 unsigned char isPinningKing(Board* board, int location){
-
+    return 0;
 }

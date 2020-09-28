@@ -3,6 +3,7 @@
 #include "board.h"
 #include "move.h"
 #include "gameplay.h"
+#include "checking.h"
 
 #define RESET -1
 
@@ -52,7 +53,7 @@ int playGame(Board* board, Move * currentMove){
                     if (index == lengthOfList){
                         printf("Invalid selection made, try again\n");
                     }
-                    else if(PIECE(nextMove->piece) == PAWN && ((COLOR(board->color) && userInput < 8) || (!COLOR(board->color) && userInput > 55))) {
+                    else if(PIECE(selectedPiece) == PAWN && ((COLOR(board->color) && userInput < 8) || (!COLOR(board->color) && userInput > 55))) {
                         //promotion
                         state = waitingForThird;
                     }
@@ -96,7 +97,7 @@ int playGame(Board* board, Move * currentMove){
                     exit(0);
             }
             // After every move these things will be checked
-            if (state = checking){
+            if (state == checking){
                 // Looking for checkmate
                     // look for check before jumping into this to avoid wasting time
                 if (currentMove->check == 1){
@@ -133,7 +134,7 @@ int playGame(Board* board, Move * currentMove){
         // User wants to undo the entire previous move
         else if (userInput == 65){
             // undo the first (and second) selection values if there are any
-            if (state == waitingForSecond | state == waitingForThird){
+            if ((state == waitingForSecond) | (state == waitingForThird)){
                 // resetting source, selectedPiece, and promotion
                 source = selectedPiece = destination = promotion = RESET;
                 // free the validMoves list
