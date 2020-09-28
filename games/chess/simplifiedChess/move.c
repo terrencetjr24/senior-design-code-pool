@@ -210,8 +210,35 @@ Move* undoLastMove(Board* board, Move* prevMove){
 }
 
 /*  Utility function
-// Returns: 1 if is pinning, 0 if not pinning
+// location = the current piece's location
+//
+// Returns: 0 = not pinned, 1 = vertical pin, 2 = horizontal pin, 3 = diagonal pin
 */
-unsigned char isPinningKing(Board* board, int location){
-    return 0;
+unsigned char isPinned(Board* board, int location){
+    unsigned char isPinned = 0; // 1 = vertical pin, 2 = horizontal pin, 3 = diagonal pin
+    int kingLocation;
+
+    if (board->color == WHITE){
+        kingLocation = board->whiteKingLocation;
+    } 
+    else{
+        kingLocation = board->blackKingLocation;
+    }
+
+    // Checking if piece and king are on same file
+    if ((location % 8) == (kingLocation % 8)){
+        //Check if there are pieces in between (black or white)
+        // If not, check opposite side for adversarial enemy pieces
+            //
+    }
+    // Checking if piece and king are on same row
+    else if ((location / 8) == (kingLocation / 8)){
+        //Check if there are pieces in between (black or white)
+    }
+    else if 
+    // Check if piece and king are on the same diagonal
+        //Check if there are pieces in between (black or white)
+
+
+    return isPinned;
 }

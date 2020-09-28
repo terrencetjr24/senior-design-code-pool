@@ -8,5 +8,6 @@ int checkForCheckMate(Board *board, Move* currentMove);
 int checkForStaleMate(Board* board, Move* currentMove);
 void checkForCastlingPriveleges(Board* board);
 int checkForRepetition(Move* currentMove);
+int isCheck(Board *board, Move* currentMove);
 
 #endif
