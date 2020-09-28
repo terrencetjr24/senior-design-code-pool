@@ -59,7 +59,7 @@ int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves
     int *retMoves;
     *numOfMoves = 0;
 
-    unsigned char isPinned = 0; // 1 = vertical pin, 2 = non-vertical pin
+    unsigned char isPinned = isPinned(board,location); // 1 = vertical pin, 2 = non-vertical pin
 
     // If the current player is white
     if(COLOR(board) == WHITE){
@@ -70,8 +70,13 @@ int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves
             }
         }
         // Checking for en passant capture
-        else if(location / 8 == 4) {
-            
+        else if(location / 8 == 4 && lastMove->piece == PAWN && lastMove->src / 8 == 6 && lastMove->dst / 8 == 4) {
+            if(lastMove->dst == location + 1){
+                moves[(*numOfMoves)++] = location + 9;
+            }
+            if(lastMove->dst == location - 1){
+                moves[(*numOfMoves)++] = location + 7;
+            }
         }
         // ALWAYS, checking directly in front of the pawn
         if(board->squares[location + 8] == EMPTY)  {
@@ -82,6 +87,12 @@ int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves
             // If it's pinned it still may be able to move forward if it's a vertical pin 
 
         // Checking the forward diagonals for capturable pieces
+        if(location % 8 != 7 && COLOR(board->squares[location + 9]) != WHITE && board->squares[location + 9] != EMPTY){
+            moves[(*numOfMoves)++] = location + 9;
+        }
+        if(location % 8 != 0 && COLOR(board->squares[location + 7]) != WHITE && board->squares[location + 7] != EMPTY){
+            moves[(*numOfMoves)++] = location + 7;
+        }
     }
     // If the current player is black
     else{
