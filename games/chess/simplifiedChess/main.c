@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
     free(board);
     // Free the moveList (make function for this)
     freeMoves(firstMove);
-    
+
     return 0;
 }
 

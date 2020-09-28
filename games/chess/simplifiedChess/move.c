@@ -24,7 +24,7 @@ int validSelection(Board *board, int location){
 //
 // Returns: The code of the piece that is moveable 
 */
-int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece){
+int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece, int * lengthOfValidMoves){
     int* moveList;
     switch(PIECE(piece)){
         case PAWN:
@@ -156,7 +156,7 @@ Move* undoLastMove(Board* board, Move* prevMove){
         // Change color of the board (whichever user's turn it is)
         // Updating the move number (decrement with each undo)
 
-        
+
     return NULL;
 }
 

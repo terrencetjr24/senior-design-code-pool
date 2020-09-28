@@ -16,7 +16,7 @@ typedef struct Move {
     unsigned char castle; // Will use the board defined values to tell if it was queen side or king side
     unsigned char playerColor;  // The color of the player who made the move (redundancy)
 
-    unsigned char moveNumber;
+    int moveNumber;
 
     unsigned char check; // 1 = check is given, 2 = check not given
 
@@ -31,7 +31,7 @@ typedef struct {
 } Undo;
 
 int validSelection(Board *board, int location);
-int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece);
+int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece, int * lengthOfValidMoves);
 int* validPawnMoves(Board* board, Move* lastMove, int location);
 int* validKnightMoves(Board* board, Move* lastMove, int location);
 int* validBishopMoves(Board* board, Move* lastMove, int location);

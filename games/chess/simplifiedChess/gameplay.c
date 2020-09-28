@@ -31,7 +31,7 @@ int playGame(Board* board, Move * currentMove){
                     selectedPiece = validSelection(board, source);
 
                     if (selectedPiece){
-                        validMoves = findValidMoves(board, currentMove, source, (unsigned char)selectedPiece);
+                        validMoves = findValidMoves(board, currentMove, source, (unsigned char)selectedPiece, &lengthOfList);
                         if (validMoves == NULL){
                             printf("no possible moves, try again\n");
                         }
@@ -46,7 +46,6 @@ int playGame(Board* board, Move * currentMove){
 
                 case waitingForSecond:
                     destination = userInput;
-                    lengthOfList = sizeof(validMoves) / sizeof(int);
                     for(index = 0; index < lengthOfList; index++){
                         if (userInput == validMoves[index])
                             break;
