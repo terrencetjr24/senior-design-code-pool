@@ -7,7 +7,6 @@
 #define SAVED_MOVES 6
 
 
-
 typedef struct Move {
     unsigned char src;
     unsigned char dst;

@@ -3,16 +3,6 @@
 #include "board.h"
 #include "move.h"
 
-void freeMoves(Move * move) {
-    Move * next = move->next;
-    free(move);
-    while(next != NULL){
-        move = next->next;
-        free(next);
-        next = move;
-    }
-}
-
 /*  Function for taking in the location selected and telling the user if there is a moveable piece there
 //
 //  Only checks that the current color can move that piece and that the piece is not pinning the current
@@ -22,6 +12,8 @@ void freeMoves(Move * move) {
 */
 int validSelection(Board *board, int location){
     if ((board->color) != (COLOR(board->squares[location]))) {
+        printf("The board color is %d\n", board->color);
+        printf("The piece color is %d\n", COLOR(board->squares[location]));
         return 0;
     }
     return board->squares[location];
@@ -134,6 +126,10 @@ Move* makeMove(Board* board, Move* prevMove, int source, int destination, int se
     // calling board set to make the source location empty
     board_set(board, source, EMPTY);
 
+    // Maniupulate board as necessarry
+        // Change color of the board (whichever user's turn it is)
+        // Updating the move number (increment with each move)
+
     return newTailMove;
 }
 
@@ -154,6 +150,13 @@ Move * newMoveNode(Move * prevMove, int src, int dst, int selectedPiece, int pro
 */
 
 Move* undoLastMove(Board* board, Move* prevMove){
+
+
+    // Maniupulate board as necessarry
+        // Change color of the board (whichever user's turn it is)
+        // Updating the move number (decrement with each undo)
+
+        
     return NULL;
 }
 

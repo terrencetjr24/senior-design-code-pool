@@ -4,7 +4,7 @@
 #include "move.h"
 #include "gameplay.h"
 
-//test
+void freeMoves(Move * move);
 
 unsigned char moveNumber;
 
@@ -42,7 +42,21 @@ int main(int argc, char **argv) {
             break;
         }
     }
+
     free(board);
     // Free the moveList (make function for this)
+    freeMoves(firstMove);
+    
     return 0;
+}
+
+
+void freeMoves(Move * move) {
+    Move * next = move->next;
+    free(move);
+    while(next != NULL){
+        move = next->next;
+        free(next);
+        next = move;
+    }
 }

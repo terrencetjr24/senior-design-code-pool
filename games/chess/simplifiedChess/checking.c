@@ -16,7 +16,7 @@
 // Returns: winner value
 */
 int checkForCheckMate(Board *board, Move* currentMove){
-    return 0;
+    return -1;
 }
 
 /* Function for looking for stalemates
@@ -27,10 +27,9 @@ int checkForCheckMate(Board *board, Move* currentMove){
 // Returnn: winner value
 */
 int checkForStaleMate(Board* board, Move* currentMove){
-    return 0;
+    return -1;
 }
 
-// Looking for castling priveleges
 /* Function for looking for castle priveleges
 //
 // Updates the board directly
@@ -39,4 +38,14 @@ int checkForStaleMate(Board* board, Move* currentMove){
 */
 void checkForCastlingPriveleges(Board* board){
     return;
+}
+
+/* Function for checking for 3 fold repition
+// -1 = no stalemate
+// 2 = draw
+// 
+// Return: winner value
+*/
+int checkForRepetition(Move* currentMove){
+    return -1;
 }

@@ -103,6 +103,8 @@ int playGame(Board* board, Move * currentMove){
                 winner = checkForStaleMate(board, currentMove);
                 // Looking for castling priveleges
                 checkForCastlingPriveleges(board);
+                // Checking for 3 fold repitions
+                winner = checkForRepetition(currentMove);
                 // Looking for ...
 
                 // Resetting state
@@ -149,8 +151,6 @@ int playGame(Board* board, Move * currentMove){
             else
                 winner = 1;
         }
-
-        board->color = !(board->color);
     }
     return winner;
 }
