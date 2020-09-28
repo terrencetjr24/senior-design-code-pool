@@ -33,6 +33,7 @@ typedef struct {
 int validSelection(Board *board, int location);
 int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece, int * lengthOfValidMoves);
 int* validPawnMoves(Board* board, Move* lastMove, int location);
+int validatePawnMove(Board * board, int src, int dest);
 int* validKnightMoves(Board* board, Move* lastMove, int location);
 int* validBishopMoves(Board* board, Move* lastMove, int location);
 int* validRookMoves(Board* board, Move* lastMove, int location);
