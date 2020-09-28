@@ -56,7 +56,29 @@ int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char pi
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validPawnMoves(Board* board, Move* lastMove, int location){
-    return NULL;
+    int moves[4] = {-1};
+    int *retMoves;
+    int numMoves = 0;
+    if(COLOR(board) == WHITE){
+        if(location / 8 == 1){
+            if(board->squares[location + 8] == EMPTY && board->squares[location + 16] == EMPTY){
+                moves[numMoves++] = location + 16;
+            }
+        }
+        else if(location / 8 == 4) {
+            //en passant
+        }
+        if(board->squares[location + 8] == EMPTY)  {
+            moves[numMoves++] = location + 8;
+        }
+    }
+    retMoves = malloc(numMoves * sizeof(int));
+    for(int i = 0; i < 2; i++){
+        if(moves[i] != -1) {
+            retMoves[i] = moves[i];
+        }
+    }
+    return retMoves;
 }
 
 /* Function for finding the valid moves for the Knight at the given location
