@@ -12,8 +12,6 @@
 */
 int validSelection(Board *board, int location){
     if ((board->color) != (COLOR(board->squares[location]))) {
-        printf("The board color is %d\n", board->color);
-        printf("The piece color is %d\n", COLOR(board->squares[location]));
         return 0;
     }
     return board->squares[location];
@@ -56,6 +54,7 @@ int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char pi
 // Returns: a list of locations that the pawn can move to
 */ 
 int* validPawnMoves(Board* board, Move* lastMove, int location){
+
     return NULL;
 }
 
@@ -129,6 +128,7 @@ Move* makeMove(Board* board, Move* prevMove, int source, int destination, int se
     // Maniupulate board as necessarry
         // Change color of the board (whichever user's turn it is)
         // Updating the move number (increment with each move)
+        // If the king moved, make sure to update this in the board
 
     return newTailMove;
 }

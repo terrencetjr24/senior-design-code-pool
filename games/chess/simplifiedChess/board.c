@@ -30,6 +30,9 @@ void board_reset(Board *board) {
     board_set(board, RF(7, 5), BLACK_BISHOP);
     board_set(board, RF(7, 6), BLACK_KNIGHT);
     board_set(board, RF(7, 7), BLACK_ROOK);
+
+    board->whiteKingLocation = RF(0, 4);
+    board->blackKingLocation = RF(7, 4);
 }
 
 void board_set(Board *board, int dest_sq, int piece) {

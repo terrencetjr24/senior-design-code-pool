@@ -52,6 +52,10 @@ typedef struct{
     int squares[64];
     int color; //Indicates who's move it is
     int castle; //Indicates castling privileges of both sides
+    
+    int blackKingLocation;
+    int whiteKingLocation;
+
     unsigned char lostPawns_black;
     unsigned char lostRooks_black;
     unsigned char lostBishops_black;
