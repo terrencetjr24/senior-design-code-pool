@@ -1,7 +1,3 @@
-# ***
-# *** DO NOT modify this file 
-# ***
-
 WARNING = -Wall -Wshadow --pedantic
 ERROR = -Wvla -Werror
 GCC = gcc -std=c99 -g $(WARNING) $(ERROR) 
@@ -21,4 +17,4 @@ run: executable
 	./chess.exe
 
 clean: # remove all machine generated files
-	rm -f main *.o output?
+	rm -f chess.exe *.o output?

@@ -4,33 +4,33 @@
 #include "move.h"
 #include "gameplay.h"
 
+#define RESET -1
+
 int playGame(Board* board, Move * currentMove){
-    int winner = 99; // 0 = white; 1 = black; 2 = draw
+    int winner = RESET; // 0 = white; 1 = black; 2 = draw
     int userInput;
     gameState state = waitingForFirst;
 
-
-    int source = -1;
-    int destination = -1;
-    int selectedPiece;
+    int source = RESET;
+    int destination = RESET;
+    int selectedPiece = RESET;
     int * validMoves;
-    int promotion = -1;
+    int promotion = RESET;
 
     int lengthOfList;
     int index;
 
-    while (currentMove->moveNumber < MAX_MOVES){
+    while ((currentMove->moveNumber < MAX_MOVES) && (winner == RESET)){
         userInput = getInput();
         // user is selecting the board
         if (userInput >= 0 && userInput < 64){
             switch (state){
                 case waitingForFirst:
-                    printf("first input\n");
                     source = userInput;
                     selectedPiece = validSelection(board, source);
 
                     if (selectedPiece){
-                        validMoves = findValidMoves(board, source, (unsigned char)selectedPiece);
+                        validMoves = findValidMoves(board, currentMove, source, (unsigned char)selectedPiece);
                         if (validMoves == NULL){
                             printf("no possible moves, try again\n");
                             break;
@@ -43,7 +43,6 @@ int playGame(Board* board, Move * currentMove){
                     break;
 
                 case waitingForSecond:
-                    printf("second input\n");
                     destination = userInput;
                     lengthOfList = sizeof(validMoves) / sizeof(int);
                     for(index = 0; index < lengthOfList; index++){
@@ -53,7 +52,8 @@ int playGame(Board* board, Move * currentMove){
                     if (index == lengthOfList){
                         print("Invalid selection made, try again\n");
                     }
-                    else if(PIECE(selectedPiece) == PAWN && ((COLOR(board->color) && userInput < 8) || (!COLOR(board->color) && userInput > 55))) {
+                    // it's already being checked for a valid move, can simply check the piece and destination
+                    else if(PIECE(selectedPiece) == PAWN && ((destination < 8) || (destination > 55))) {
                         //promotion
                         state = waitingForThird;
                     }
@@ -61,24 +61,30 @@ int playGame(Board* board, Move * currentMove){
                         // make the desired move
                             // create a new move node (passing through the inputs and the current node)
                             // Execute the new move on the actual board
-                        // Saving the move into currentMove
-                        // creating another Move node, linking it and the currentMove, and assigning current move to the new empty node
-                        // Reset source and destination to -1
+                            // Saving the move into currentMove
+                        currentMove = makeMove(board, currentMove, source, destination, selectedPiece, promotion);
+                        // Reset selectedPiece, source, destination, and promotion to -1
+                        selectedPiece = source = destination = promotion = RESET;
                         // Then free the valid move list
+                        free(validMoves);
+                        state = checking;
                     }
                     break;
                 // Hanlding pawn promotions
                 case waitingForThird:
-                    // For pawn promotions 0 = Queen, 1 = Knight, 2 = Bishop, 3 = Rook
+                    // For pawn promotions Knight = 2, Bishop = 3, Rook = 4, Queen = 5
                     promotion = userInput;
 
-                    // Upgrade the pawn to the desired unit
                     // make the desired move
                         // create a new move node (passing through the inputs and the current node)
                         // Execute the new move on the actual board
-                    // creating another Move node, linking it and the currentMove, and assigning current move to the new empty node
-                    // Reset source and destination to -1
+                        // Saving the move into currentMove
+                    currentMove = makeMove(board, currentMove, source, destination, selectedPiece, promotion);
+                    // Reset selectedPiece, source, destination, and promotion to -1
+                    selectedPiece = source = destination = promotion = RESET;
                     // Then free the valid move list
+                    free(validMoves);
+                    state = checking;
                     break;
                     
                 default:
@@ -86,30 +92,54 @@ int playGame(Board* board, Move * currentMove){
                     exit(0);
             }
             // After every move these things will be checked
-            // (Only want to check after a move to avoid wasted processing time)
-            if ((state == waitingForSecond) || (state == waitingForThird)){
+            if (state = checking){
                 // Looking for checkmate
                     // look for check before jumping into this to avoid wasting time
+                if (currentMove->check == 1){
+                    winner = checkForCheckMate(board, currentMove);
+                }
                 // Looking for stalemate
+                winner = checkForStaleMate(board, currentMove);
+                // Looking for castling priveleges
+                checkForCastlingPriveleges(board);
                 // Looking for ...
+
+                // Resetting state
+                state = waitingForFirst;
             }
         }
-        // User wants to undo first half of previous move
+        // User wants to undo first half or second half of previous move
         else if (userInput == 64){
             // If the first selection has already been recieved, then we'll respond to this request
             if (state == waitingForSecond){
-                // Reset source and destination to -1
+                // Reset source and selectedPiece to -1
+                source = selectedPiece = RESET;
                 // Then free the valid move list
+                free(validMoves);
+                // Reverting the game state
+                state = waitingForFirst;
+            }
+            else if (state == waitingForThird){
+                // reset destination
+                destination = RESET;
+                // Reverting the game state
+                state = waitingForSecond;
             }
         }
         // User wants to undo the entire previous move
         else if (userInput == 65){
-            // undo the first selection
-            if (state == waitingForSecond){
-                
+            // undo the first (and second) selection values if there are any
+            if (state == waitingForSecond | state == waitingForThird){
+                // resetting source, selectedPiece, and promotion
+                source = selectedPiece = destination = promotion = RESET;
+                // free the validMoves list
+                free(validMoves);
             }
-
             // Now undo the entire previous move regardless
+            currentMove = undoLastMove(board, currentMove);
+
+            // Reset the game state
+            state = waitingForFirst;
         }
 	// User wants to resign
         else if (userInput == 66){
@@ -117,10 +147,8 @@ int playGame(Board* board, Move * currentMove){
                 winner = 0;
             else
                 winner = 1;
-            break;
         }
     }
-
     return winner;
 }
 
@@ -131,11 +159,15 @@ int playGame(Board* board, Move * currentMove){
 /*
 //  Function to allow the user to make the next move, to undo the previous move, or to resign
 // 0 - 63 = a desired location (user is initiating a move or finishing a move)
-// 64 = undo first half of move selection 
+// 64 = undo first half or second halaf of move selection 
 // 65 = undo the entire previous move
 // 66 = resign the game
 // 
 // For pawn promotions 0 = Queen, 1 = Knight, 2 = Bishop, 3 = Rook
+//
+// When using with the microcontroller, the above integers are only what the 
+// gameplay function wants. The microcontroller can go about translating these
+// in whatever way it would like
 */
 int getInput(){
 

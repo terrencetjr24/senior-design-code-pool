@@ -4,7 +4,7 @@
 #include "board.h"
 #include "move.h"
 
-typedef enum gameState {waitingForFirst, waitingForSecond, waitingForThird} gameState;
+typedef enum gameState {waitingForFirst, waitingForSecond, waitingForThird, checking} gameState;
 
 
 int playGame(Board* board, Move * currentMove);

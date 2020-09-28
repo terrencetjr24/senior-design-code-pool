@@ -27,12 +27,15 @@ int main(int argc, char **argv) {
         result = playGame(board, firstMove);
         if (result == 1){
             printf("Black won!!\n");
+            break;
         }
         else if (result == 0){
             printf("White won!!\n");
+            break;
         }
         else if (result == 2){
             printf("Draw game...\n");
+            break;
         }
         else{
             printf("Something went wrong. Exitting");
@@ -40,7 +43,6 @@ int main(int argc, char **argv) {
         }
     }
     free(board);
-    // Free the moveList
-
+    // Free the moveList (make function for this)
     return 0;
 }

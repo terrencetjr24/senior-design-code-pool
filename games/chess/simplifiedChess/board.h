@@ -64,11 +64,7 @@ typedef struct{
 
 void board_clear(Board *board);
 void board_reset(Board *board);
-void board_set(Board *board, int sq, int piece);
+void board_set(Board *board, int src_sq, int dest_sq, int piece);
 void board_print(Board *board);
-//void board_load_fen(Board *board, char *fen);
-
-unsigned char isCheck(Board* board, Move* prevMove);
-unsigned char isStaleMate(Board* board);
 
 #endif

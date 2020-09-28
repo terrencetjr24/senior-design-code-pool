@@ -31,26 +31,17 @@ typedef struct {
 } Undo;
 
 int validSelection(Board *board, int location);
+int* findValidMoves(Board* board, Move* lastMove, int location, unsigned char piece);
+int* validPawnMoves(Board* board, Move* lastMove, int location);
+int* validKnightMoves(Board* board, Move* lastMove, int location);
+int* validBishopMoves(Board* board, Move* lastMove, int location);
+int* validRookMoves(Board* board, Move* lastMove, int location);
+int* validQueenMoves(Board* board, Move* lastMove, int location);
+int* validKingMoves(Board* board, Move* lastMove, int location);
 
 Move * newMoveNode(Move * currentMove, int src, int dst, int selectedPiece, int promotion);
-void makeMove(Board *board, Move *move);
+Move* makeMove(Board* board, Move* currentMove, int source, int destination, int selectedPiece, int promotion);
 
-void undoHalfMove();
 Move * undoLastMove(Board* board, Move* prevMove);
-
-
-
-void do_null_move(Board *board, Undo *undo);
-void undo_null_move(Board *board, Undo *undo);
-void do_move(Board *board, Move *move, Undo *undo);
-void undo_move(Board *board, Move *move, Undo *undo);
-int score_move(Board *board, Move *move);
-
-void move_to_string(Move *move, char *str);
-void move_from_string(Move *move, const char *str);
-void notate_move(Board *board, Move *move, char *result);
-void print_move(Board *board, Move *move);
-int parse_move(Board *board, const char *notation, Move *move);
-int parse_pgn(Board *board, const char *pgn);
 
 #endif
