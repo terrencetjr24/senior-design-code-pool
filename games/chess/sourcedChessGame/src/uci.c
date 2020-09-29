@@ -203,6 +203,10 @@ void uci_main() {
                         // Reset selectedPiece, source, destination, and promotion to -1
                         source = destination = promotion = RESET;
                         // Then free the valid move list
+                        printf("Move list: \n");
+                        for(index = 0; index < numLegalMoves; index++){
+                            printf("src: %d, dest: %d\n", legalMoves[index].src, legalMoves[index].dst);
+                        }
                         memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
                         memset(highlightedDests, -1, sizeof(Move) * MAX_MOVES);
                         state = checking;
@@ -238,11 +242,12 @@ void uci_main() {
             if (state == checking){
                 // Looking for checkmate
                     // look for check before jumping into this to avoid wasting time
+                numLegalMoves = gen_legal_moves(&board, legalMoves);
                 if(numLegalMoves == 0) {
                     if(is_check(&board)) {
                         //checkmate
-                        if(board.color == BLACK) winner = 1;
-                        else winner = 0;
+                        if(board.color == BLACK) winner = 0;
+                        else winner = 1;
                     }
                     else{
                         //stalemate
@@ -254,6 +259,7 @@ void uci_main() {
                 // Looking for ...
 
                 // Resetting state
+                memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
                 state = waitingForFirst;
             }
         }
@@ -299,7 +305,12 @@ void uci_main() {
                 winner = 1;
         }
     }
-    printf("winner is player %d\n", winner);
+    if(winner) {
+        printf("Black wins!\n");
+    }
+    else {
+        printf("White wins.\n");
+    }
 }
 
 int getInput(){
