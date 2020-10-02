@@ -134,6 +134,7 @@ int parse_line() {
 void uci_main() {
     setbuf(stdout, NULL);
     board_reset(&board);
+    board_print(&board);
 
     int winner = RESET; // 0 = white; 1 = black; 2 = draw
     int userInput;
@@ -155,7 +156,7 @@ void uci_main() {
     Move * currentMove = malloc(sizeof(Move));
 
     while (winner == RESET){
-        userInput = getInput();
+        userInput = getInput(state);
         // user is selecting the board
         if (userInput >= 0 && userInput < 64){
             switch (state){
@@ -171,6 +172,7 @@ void uci_main() {
                     if (numhighlightedDests == 0){
                         // Jump to error state
                         // Tell user their selection was invalid
+                        printf("Invalid selection made, try again.\n");
                         break;
                     }
                     state = waitingForSecond;
@@ -203,10 +205,10 @@ void uci_main() {
                         // Reset selectedPiece, source, destination, and promotion to -1
                         source = destination = promotion = RESET;
                         // Then free the valid move list
-                        printf("Move list: \n");
+                        /*printf("Move list: \n");
                         for(index = 0; index < numLegalMoves; index++){
                             printf("src: %d, dest: %d\n", legalMoves[index].src, legalMoves[index].dst);
-                        }
+                        }*/
                         memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
                         memset(highlightedDests, -1, sizeof(Move) * MAX_MOVES);
                         state = checking;
@@ -313,14 +315,25 @@ void uci_main() {
     }
 }
 
-int getInput(){
+int getInput(gameState state){
 
     int value = -1;
-    printf("Enter a # between 0 and 66\n");
+    
+    switch(state) {
+        case waitingForFirst:
+            printf("Select a piece to move (0-63) or resign (66)\n");
+            break;
+        case waitingForSecond:
+            printf("Select a square to move this piece to (0-63), choose a different piece (64) or resign (66)\n");
+            break;
+        case waitingForThird:
+            printf("Select the type of piece to promote to (N=2, B=3, R=4, Q=5), choose a different square to move to (64), or resign (66)\n");
+            break;
+    }
     scanf("%d", &value);
 
     while(value < 0 || value > 66){
-        printf("Enter a # between 0 and 66\n");
+        printf("Please enter a valid number (0-66)\n");
         scanf("%d", &value);
     }
 
