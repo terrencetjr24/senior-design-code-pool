@@ -97,25 +97,30 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   HAL_StatusTypeDef spiStatus = HAL_OK;
   //char data[] = "hello";
-  uint8_t data = 0xcc; // 1010 1010
+  uint8_t data [1] = {0x80};
+  uint8_t data2 [1] = {0}; //should not be 0xaa after
 
-  //uint8_t data[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff};
-
+  uint16_t blue_bottomLED = GPIO_PIN_15;
+  uint16_t green_leftLED = LD4_Pin;
+  uint16_t orange_topLED = LD3_Pin;
+  uint16_t red_rightLED = LD5_Pin;
 
   while (1)
   {
-	  /*
-	  HAL_Delay(10);
-	      HAL_GPIO_TogglePin(GPIOD, LD4_Pin);
-	      HAL_Delay(10);
-	      HAL_GPIO_TogglePin(GPIOD, LD3_Pin);
-	      HAL_Delay(10);
-	      HAL_GPIO_TogglePin(GPIOD, LD5_Pin);
-	      HAL_Delay(10);
-	      HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_15);
-	*/
-//	      hspi1.pTxBuffPtr = &data;
-	      spiStatus = HAL_SPI_Transmit(&hspi1, (uint8_t*)(&data), sizeof(data), HAL_MAX_DELAY);
+
+	      spiStatus = HAL_SPI_TransmitReceive(&hspi1, data, data2, 1, HAL_MAX_DELAY);
+
+	      if (data2[0] == 0xff){
+	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
+	    	  HAL_Delay(500);
+	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
+	      }
+
+	      //HAL_Delay(1);
+
+	      HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
+
+
 
   }
   /* USER CODE END 3 */

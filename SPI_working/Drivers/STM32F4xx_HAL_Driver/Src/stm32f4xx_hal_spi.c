@@ -1246,6 +1246,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
       }
 
       /* Wait until RXNE flag is reset */
+
       if ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_RXNE)) && (hspi->RxXferCount > 0U))
       {
         (*(uint8_t *)hspi->pRxBuffPtr) = hspi->Instance->DR;
