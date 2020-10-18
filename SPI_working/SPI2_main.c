@@ -37,21 +37,30 @@
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 
+#define BLUE_BOTTOMLED GPIO_PIN_15
+#define GREEN_LEFTLED LD4_Pin
+#define ORANGE_TOPLED LD3_Pin
+#define RED_RIGHTled LD5_Pin
+
+#define A_LED GPIO_PIN_15
+#define B_LED GPIO_PIN_14
+#define START_LED GPIO_PIN_11
+#define SELECT_LED GPIO_PIN_10
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
+
+static void My_SPI2_INIT(void);
+static void interpretController(uint8_t data);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -91,73 +100,22 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
+
+  My_SPI2_INIT();
   /* USER CODE BEGIN 2 */
 
 
   /* USER CODE END 2 */
   HAL_StatusTypeDef spiStatus = HAL_OK;
-      //char data[] = "hello";
-      uint8_t data [1] = {0x80};
-      uint8_t data2 [1] = {0}; //should not be 0xaa after
+  uint8_t latch [1] = {0x80};
+  uint8_t data [1] = {0};
 
-      uint16_t blue_bottomLED = GPIO_PIN_15;
-      uint16_t green_leftLED = LD4_Pin;
-      uint16_t orange_topLED = LD3_Pin;
-      uint16_t red_rightLED = LD5_Pin;
+  while (1)
+  {
+	  spiStatus = HAL_SPI_TransmitReceive(&hspi2, latch, data, 1, HAL_MAX_DELAY);
+	  interpretController(*data);
 
-      uint16_t a_LED = GPIO_PIN_15;
-      uint16_t b_LED = GPIO_PIN_14;
-      uint16_t start_LED = GPIO_PIN_11;
-      uint16_t select_LED = GPIO_PIN_10;
-
-      while (1)
-      {
-
-
-    	      spiStatus = HAL_SPI_TransmitReceive(&hspi2, data, data2, 1, HAL_MAX_DELAY);
-
-    	      if (data2[0] == 0xfc){
-    	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
-    	      }
-    	      else if (data2[0] == 0xf3){
-    	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
-    	      }
-    	      else if (data2[0] == 0x7e){
-    	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
-    	      }
-    	      else if (data2[0] == 0xf9){
-    	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
-    	      }
-    	      else if (data2[0] == 0x3f){
-    	    	  HAL_GPIO_WritePin(GPIOE, a_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_WritePin(GPIOE, a_LED, GPIO_PIN_RESET);
-    	      }
-    	      else if (data2[0] == 0x9f){
-    	    	  HAL_GPIO_WritePin(GPIOE, b_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_WritePin(GPIOE, b_LED, GPIO_PIN_RESET);
-    	      }
-    	      else if (data2[0] == 0xcf){
-    	    	  HAL_GPIO_WritePin(GPIOE, select_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_WritePin(GPIOE, select_LED, GPIO_PIN_RESET);
-    	      }
-    	      else if (data2[0] == 0xe7){
-    	    	  HAL_GPIO_WritePin(GPIOE, start_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1);
-    	    	  HAL_GPIO_WritePin(GPIOE, start_LED, GPIO_PIN_RESET);
-    	      }
-
-    	      	 HAL_Delay(1);
+	  HAL_Delay(1);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -310,10 +268,6 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOD, LD4_Pin|LD3_Pin|LD5_Pin|LD6_Pin
                           |Audio_RST_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(SPI2_CLK_GPIO_Port, SPI2_CLK_Pin|SPI2_MOSI_Pin, GPIO_PIN_RESET);
-
-    HAL_GPIO_WritePin(SPI2_MISO_GPIO_Port, SPI2_MISO_Pin, GPIO_PIN_RESET);
-
   /*Configure GPIO pin : CS_I2C_SPI_Pin */
   GPIO_InitStruct.Pin = CS_I2C_SPI_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -422,21 +376,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(MEMS_INT2_GPIO_Port, &GPIO_InitStruct);
 
-  // Us for SPI2
-          GPIO_InitStruct.Pin = SPI2_CLK_Pin|SPI2_MOSI_Pin;
-            GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-            GPIO_InitStruct.Pull = GPIO_PULLUP;
-            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-            GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-            HAL_GPIO_Init(SPI2_CLK_GPIO_Port, &GPIO_InitStruct);
-
-            GPIO_InitStruct.Pin = SPI2_MISO_Pin|SPI2_MOSI_Pin;
-                      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-                      GPIO_InitStruct.Pull = GPIO_PULLUP;
-                      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-                      GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-                      HAL_GPIO_Init(SPI2_MISO_GPIO_Port, &GPIO_InitStruct);
-
 }
 
 /* USER CODE BEGIN 4 */
@@ -471,5 +410,110 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
+
+static void My_SPI2_INIT(void){
+
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+
+	HAL_GPIO_WritePin(GPIOE, CS_I2C_SPI_Pin|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+
+	HAL_GPIO_WritePin(SPI2_CLK_GPIO_Port, SPI2_CLK_Pin|SPI2_MOSI_Pin, GPIO_PIN_RESET);
+
+	HAL_GPIO_WritePin(SPI2_MISO_GPIO_Port, SPI2_MISO_Pin, GPIO_PIN_RESET);
+
+
+	/*Configure GPIO pins : PE10 PE11 PE14 PE15 */
+	  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_14|GPIO_PIN_15;
+	  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	  GPIO_InitStruct.Pull = GPIO_PULLUP;
+	  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+
+	// Us for SPI2
+	GPIO_InitStruct.Pin = SPI2_CLK_Pin|SPI2_MOSI_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+	HAL_GPIO_Init(SPI2_CLK_GPIO_Port, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = SPI2_MISO_Pin|SPI2_MOSI_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+	HAL_GPIO_Init(SPI2_MISO_GPIO_Port, &GPIO_InitStruct);
+}
+
+static void interpretController(uint8_t data){
+
+	uint8_t invertedData = ~data;
+
+	// Inside the parenthesis is what we see on logic analyzer
+	// taking the inverse to more easily provide button precedence
+	static uint8_t left = ~(0xfc) ;
+	static uint8_t up = ~(0xf3);
+	static uint8_t right = ~(0x7e);
+	static uint8_t down = ~(0xf9);
+
+	static uint8_t a = ~(0x3f);
+	static uint8_t b = ~(0x9f);
+	static uint8_t select = ~(0xcf);
+	static uint8_t start = ~(0xe7);
+
+	// a gets highest precedence and so on
+	if ((invertedData & a) == a){
+		HAL_GPIO_WritePin(GPIOE, A_LED, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_WritePin(GPIOE, A_LED, GPIO_PIN_RESET);
+	}
+	else if ((invertedData & up) == up){
+		HAL_GPIO_TogglePin(GPIOD, ORANGE_TOPLED);
+		HAL_Delay(1);
+		HAL_GPIO_TogglePin(GPIOD, ORANGE_TOPLED);
+	}
+	else if((invertedData & down) == down){
+		HAL_GPIO_TogglePin(GPIOD, BLUE_BOTTOMLED);
+		HAL_Delay(1);
+		HAL_GPIO_TogglePin(GPIOD, BLUE_BOTTOMLED);
+	}
+	else if ((invertedData & right) == right){
+		HAL_GPIO_TogglePin(GPIOD, RED_RIGHTled);
+		HAL_Delay(1);
+		HAL_GPIO_TogglePin(GPIOD, RED_RIGHTled);
+	}
+	else if ((invertedData & left) == left){
+		HAL_GPIO_TogglePin(GPIOD, GREEN_LEFTLED);
+		HAL_Delay(1);
+		HAL_GPIO_TogglePin(GPIOD, GREEN_LEFTLED);
+	}
+	else if ((invertedData & start) == start){
+		HAL_GPIO_WritePin(GPIOE, START_LED, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_WritePin(GPIOE, START_LED, GPIO_PIN_RESET);
+	}
+	else if ((invertedData & select) == select){
+		HAL_GPIO_WritePin(GPIOE, SELECT_LED, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_WritePin(GPIOE, SELECT_LED, GPIO_PIN_RESET);
+	}
+	else if ((invertedData & b) == b){
+		HAL_GPIO_WritePin(GPIOE, B_LED, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_WritePin(GPIOE, B_LED, GPIO_PIN_RESET);
+	}
+	// Nothing was selected
+	else{
+		HAL_GPIO_TogglePin(GPIOD, ORANGE_TOPLED | BLUE_BOTTOMLED | GREEN_LEFTLED | RED_RIGHTled);
+		HAL_GPIO_WritePin(GPIOE, SELECT_LED | START_LED | A_LED | B_LED, GPIO_PIN_SET);
+		HAL_Delay(1);
+		HAL_GPIO_TogglePin(GPIOD, ORANGE_TOPLED | BLUE_BOTTOMLED | GREEN_LEFTLED | RED_RIGHTled);
+		HAL_GPIO_WritePin(GPIOE, SELECT_LED | START_LED | A_LED | B_LED, GPIO_PIN_RESET);
+	}
+
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
