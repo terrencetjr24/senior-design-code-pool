@@ -118,50 +118,46 @@ int main(void)
 
     	      if (data2[0] == 0xfc){
     	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
     	      }
     	      else if (data2[0] == 0xf3){
     	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
     	      }
     	      else if (data2[0] == 0x7e){
     	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
     	      }
     	      else if (data2[0] == 0xf9){
     	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
     	      }
     	      else if (data2[0] == 0x3f){
     	    	  HAL_GPIO_WritePin(GPIOE, a_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_WritePin(GPIOE, a_LED, GPIO_PIN_RESET);
-    	    	  HAL_Delay(1000);
     	      }
     	      else if (data2[0] == 0x9f){
     	    	  HAL_GPIO_WritePin(GPIOE, b_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_WritePin(GPIOE, b_LED, GPIO_PIN_RESET);
-    	    	  HAL_Delay(1000);
     	      }
     	      else if (data2[0] == 0xcf){
     	    	  HAL_GPIO_WritePin(GPIOE, select_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_WritePin(GPIOE, select_LED, GPIO_PIN_RESET);
-    	    	  HAL_Delay(1000);
     	      }
     	      else if (data2[0] == 0xe7){
     	    	  HAL_GPIO_WritePin(GPIOE, start_LED, GPIO_PIN_SET);
-    	    	  HAL_Delay(1000);
+    	    	  HAL_Delay(1);
     	    	  HAL_GPIO_WritePin(GPIOE, start_LED, GPIO_PIN_RESET);
-    	    	  HAL_Delay(1000);
     	      }
 
-
+    	      	 HAL_Delay(1);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
