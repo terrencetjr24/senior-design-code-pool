@@ -137,7 +137,8 @@ void uci_main() {
     board_print(&board);
 
     int winner = RESET; // 0 = white; 1 = black; 2 = draw
-    int userInput;
+    int cursorPos = 0;
+    buttonPress userInput;
     gameState state = waitingForFirst;
 
     int source = RESET;
@@ -156,166 +157,180 @@ void uci_main() {
     Move * currentMove = malloc(sizeof(Move));
 
     while (winner == RESET){
-        userInput = getInput(state);
-        // user is selecting the board
-        if (userInput >= 0 && userInput < 64){
-            switch (state){
-                case waitingForFirst:
-                    source = userInput;
-                    numLegalMoves = gen_legal_moves(&board, legalMoves);
-                    numhighlightedDests = 0;
-                    for(int i = 0; i < numLegalMoves; i++){
-                        if(legalMoves[i].src == source) {
-                            highlightedDests[numhighlightedDests++] = legalMoves[i].dst;
+        userInput = getInput(userInput);
+        switch (userInput) {
+            case APress:
+                switch (state){
+                    case waitingForFirst:
+                        source = userInput;
+                        numLegalMoves = gen_legal_moves(&board, legalMoves);
+                        numhighlightedDests = 0;
+                        for(int i = 0; i < numLegalMoves; i++){
+                            if(legalMoves[i].src == source) {
+                                highlightedDests[numhighlightedDests++] = legalMoves[i].dst;
+                            }
                         }
-                    }
-                    if (numhighlightedDests == 0){
-                        // Jump to error state
-                        // Tell user their selection was invalid
-                        printf("Invalid selection made, try again.\n");
-                        break;
-                    }
-                    state = waitingForSecond;
-                    // display highlighted squares
-                    break;
-
-                case waitingForSecond:
-                    destination = userInput;
-                    for(index = 0; index < numhighlightedDests; index++){
-                        if (destination == highlightedDests[index])
+                        if (numhighlightedDests == 0){
+                            // Jump to error state
+                            // Tell user their selection was invalid
+                            printf("Invalid selection made, try again.\n");
                             break;
-                    }
-                    if (index == numhighlightedDests){
-                        printf("Invalid selection made, try again\n");
-                    }
-                    // it's already being checked for a valid move, can simply check the piece and destination
-                    else if(PIECE(board.squares[source]) == PAWN && ((destination < 8) || (destination > 55))) {
-                        //promotion
-                        state = waitingForThird;
-                    }
-                    else{
+                        }
+                        state = waitingForSecond;
+                        // display highlighted squares
+                        break;
+
+                    case waitingForSecond:
+                        destination = userInput;
+                        for(index = 0; index < numhighlightedDests; index++){
+                            if (destination == highlightedDests[index])
+                                break;
+                        }
+                        if (index == numhighlightedDests){
+                            printf("Invalid selection made, try again\n");
+                        }
+                        // it's already being checked for a valid move, can simply check the piece and destination
+                        else if(PIECE(board.squares[source]) == PAWN && ((destination < 8) || (destination > 55))) {
+                            //promotion
+                            state = waitingForThird;
+                        }
+                        else{
+                            // make the desired move
+                                // create a new move node (passing through the inputs and the current node)
+                                // Execute the new move on the actual board
+                                // Saving the move into currentMove
+                            currentMove->src = source;
+                            currentMove->dst = destination;
+                            currentMove->promotion = EMPTY;
+                            make_move(&board, currentMove);
+                            // Reset selectedPiece, source, destination, and promotion to -1
+                            source = destination = promotion = RESET;
+                            // Then free the valid move list
+                            /*printf("Move list: \n");
+                            for(index = 0; index < numLegalMoves; index++){
+                                printf("src: %d, dest: %d\n", legalMoves[index].src, legalMoves[index].dst);
+                            }*/
+                            memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
+                            memset(highlightedDests, -1, sizeof(Move) * MAX_MOVES);
+                            state = checking;
+                            board_print(&board);
+                        }
+                        break;
+                    // Hanlding pawn promotions
+                    case waitingForThird:
+                        // For pawn promotions Knight = 2, Bishop = 3, Rook = 4, Queen = 5
+                        promotion = (unsigned char)userInput;
+
                         // make the desired move
                             // create a new move node (passing through the inputs and the current node)
                             // Execute the new move on the actual board
                             // Saving the move into currentMove
                         currentMove->src = source;
                         currentMove->dst = destination;
-                        currentMove->promotion = EMPTY;
+                        currentMove->promotion = promotion;
                         make_move(&board, currentMove);
                         // Reset selectedPiece, source, destination, and promotion to -1
                         source = destination = promotion = RESET;
                         // Then free the valid move list
-                        /*printf("Move list: \n");
-                        for(index = 0; index < numLegalMoves; index++){
-                            printf("src: %d, dest: %d\n", legalMoves[index].src, legalMoves[index].dst);
-                        }*/
                         memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
                         memset(highlightedDests, -1, sizeof(Move) * MAX_MOVES);
                         state = checking;
                         board_print(&board);
+                        break;
+                        
+                    default:
+                        printf("invalid state or jumped into checking state too early\n");
+                }
+                // After every move these things will be checked
+                if (state == checking){
+                    // Looking for checkmate
+                        // look for check before jumping into this to avoid wasting time
+                    numLegalMoves = gen_legal_moves(&board, legalMoves);
+                    if(numLegalMoves == 0) {
+                        if(is_check(&board)) {
+                            //checkmate
+                            if(board.color == BLACK) winner = 0;
+                            else winner = 1;
+                        }
+                        else{
+                            //stalemate
+                            winner = 2;
+                        }
                     }
-                    break;
-                // Hanlding pawn promotions
-                case waitingForThird:
-                    // For pawn promotions Knight = 2, Bishop = 3, Rook = 4, Queen = 5
-                    promotion = (unsigned char)userInput;
+                    // Checking for 3 fold repitions
+                    // winner = checkForRepetition(currentMove);
+                    // Looking for ...
 
-                    // make the desired move
-                        // create a new move node (passing through the inputs and the current node)
-                        // Execute the new move on the actual board
-                        // Saving the move into currentMove
-                    currentMove->src = source;
-                    currentMove->dst = destination;
-                    currentMove->promotion = promotion;
-                    make_move(&board, currentMove);
-                    // Reset selectedPiece, source, destination, and promotion to -1
-                    source = destination = promotion = RESET;
+                    // Resetting state
+                    memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
+                    state = waitingForFirst;
+                }
+                break;
+            case BPress:
+                // If the first selection has already been recieved, then we'll respond to this request
+                if (state == waitingForSecond){
+                    // Reset source and selectedPiece to -1
+                    source = RESET;
                     // Then free the valid move list
                     memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
                     memset(highlightedDests, -1, sizeof(Move) * MAX_MOVES);
-                    state = checking;
-                    board_print(&board);
-                    break;
-                    
-                default:
-                    printf("invalid state or jumped into checking state too early\n");
-            }
-            // After every move these things will be checked
-            if (state == checking){
-                // Looking for checkmate
-                    // look for check before jumping into this to avoid wasting time
-                numLegalMoves = gen_legal_moves(&board, legalMoves);
-                if(numLegalMoves == 0) {
-                    if(is_check(&board)) {
-                        //checkmate
-                        if(board.color == BLACK) winner = 0;
-                        else winner = 1;
-                    }
-                    else{
-                        //stalemate
-                        winner = 2;
-                    }
+                    // Reverting the game state
+                    state = waitingForFirst;
                 }
-                // Checking for 3 fold repitions
-                // winner = checkForRepetition(currentMove);
-                // Looking for ...
-
-                // Resetting state
-                memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
-                state = waitingForFirst;
-            }
-        }
-        // User wants to undo first half or second half of previous move
-        else if (userInput == 64){
-            // If the first selection has already been recieved, then we'll respond to this request
-            if (state == waitingForSecond){
-                // Reset source and selectedPiece to -1
-                source = RESET;
-                // Then free the valid move list
-                memset(legalMoves, -1, sizeof(Move) * MAX_MOVES);
-                memset(highlightedDests, -1, sizeof(Move) * MAX_MOVES);
-                // Reverting the game state
-                state = waitingForFirst;
-            }
-            else if (state == waitingForThird){
-                // reset destination
-                destination = RESET;
-                // Reverting the game state
-                state = waitingForSecond;
-            }
-        }
-        // User wants to undo the entire previous move
-        // else if (userInput == 65){
-        //     // undo the first (and second) selection values if there are any
-        //     if ((state == waitingForSecond) | (state == waitingForThird)){
-        //         // resetting source, selectedPiece, and promotion
-        //         source = selectedPiece = destination = promotion = RESET;
-        //         // free the validMoves list
-        //         free(validMoves);
-        //     }
-        //     // Now undo the entire previous move regardless
-        //     currentMove = undoLastMove(board, currentMove);
-
-        //     // Reset the game state
-        //     state = waitingForFirst;
-        // }
-	    // User wants to resign
-        else if (userInput == 66){
-            if (board.color)
-                winner = 0;
-            else
-                winner = 1;
+                else if (state == waitingForThird){
+                    // reset destination
+                    destination = RESET;
+                    // Reverting the game state
+                    state = waitingForSecond;
+                }
+                break;
+            case SePress:
+                // User wants to resign
+                if (board.color)
+                    winner = 0;
+                else
+                    winner = 1;
+                break;
+            case StPress:
+                // User wants to offer draw
+                break;
+            case UPress:
+                if(cursorPos <= 55) cursorPos += 8;
+                break;
+            case DPress:
+                if(cursorPos >= 8) cursorPos -= 8;
+                break;
+            case LPress:
+                if(cursorPos % 8 != 0) cursorPos--;
+                break;
+            case RPress:
+                if(cursorPos % 8 != 7) cursorPos++;
+                break;
+            case SamePress:
+                break;
         }
     }
     if(winner) {
-        printf("Black wins!\n");
+        //display winner text on screen
+        //return to main menu
     }
     else {
-        printf("White wins.\n");
+        //display winner text on screen
+        //return to main menu
     }
 }
 
-int getInput(gameState state){
+buttonPress getInput(buttonPress prevInput){
+
+    buttonPress currentFrame = SamePress;//GET FROM GLOBAL INPUT BUFFER
+    if(currentFrame != prevInput) {
+        return currentFrame;
+    }
+
+    return SamePress;
+}
+
+int getInput_DEMO(gameState state){
 
     int value = -1;
     
@@ -328,6 +343,8 @@ int getInput(gameState state){
             break;
         case waitingForThird:
             printf("Select the type of piece to promote to (N=2, B=3, R=4, Q=5), choose a different square to move to (64), or resign (66)\n");
+            break;
+        default:
             break;
     }
     scanf("%d", &value);
