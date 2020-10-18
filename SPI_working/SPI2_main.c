@@ -95,44 +95,72 @@ int main(void)
 
 
   /* USER CODE END 2 */
-
   HAL_StatusTypeDef spiStatus = HAL_OK;
-    //char data[] = "hello";
-    uint8_t data [1] = {0x80};
-    uint8_t data2 [1] = {0}; //should not be 0xaa after
+      //char data[] = "hello";
+      uint8_t data [1] = {0x80};
+      uint8_t data2 [1] = {0}; //should not be 0xaa after
 
-    uint16_t blue_bottomLED = GPIO_PIN_15;
-    uint16_t green_leftLED = LD4_Pin;
-    uint16_t orange_topLED = LD3_Pin;
-    uint16_t red_rightLED = LD5_Pin;
+      uint16_t blue_bottomLED = GPIO_PIN_15;
+      uint16_t green_leftLED = LD4_Pin;
+      uint16_t orange_topLED = LD3_Pin;
+      uint16_t red_rightLED = LD5_Pin;
 
-    while (1)
-    {
+      uint16_t a_LED = GPIO_PIN_15;
+      uint16_t b_LED = GPIO_PIN_14;
+      uint16_t start_LED = GPIO_PIN_11;
+      uint16_t select_LED = GPIO_PIN_10;
 
-  	      spiStatus = HAL_SPI_TransmitReceive(&hspi2, data, data2, 1, HAL_MAX_DELAY);
+      while (1)
+      {
 
-  	      if (data2[0] == 0xfc){
-  	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
-  	    	  HAL_Delay(1000);
-  	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
-  	      }
-  	      else if (data2[0] == 0xf3){
-  	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
-  	    	  HAL_Delay(1000);
-  	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
-  	      }
-  	      else if (data2[0] == 0x7e){
-  	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
-  	    	  HAL_Delay(1000);
-  	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
-  	      }
-  	      else if (data2[0] == 0xf9){
-  	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
-  	    	  HAL_Delay(1000);
-  	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
-  	      }
 
-  	      HAL_Delay(1);
+    	      spiStatus = HAL_SPI_TransmitReceive(&hspi2, data, data2, 1, HAL_MAX_DELAY);
+
+    	      if (data2[0] == 0xfc){
+    	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_TogglePin(GPIOD, green_leftLED);
+    	      }
+    	      else if (data2[0] == 0xf3){
+    	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_TogglePin(GPIOD, orange_topLED);
+    	      }
+    	      else if (data2[0] == 0x7e){
+    	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_TogglePin(GPIOD, red_rightLED);
+    	      }
+    	      else if (data2[0] == 0xf9){
+    	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_TogglePin(GPIOD, blue_bottomLED);
+    	      }
+    	      else if (data2[0] == 0x3f){
+    	    	  HAL_GPIO_WritePin(GPIOE, a_LED, GPIO_PIN_SET);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_WritePin(GPIOE, a_LED, GPIO_PIN_RESET);
+    	    	  HAL_Delay(1000);
+    	      }
+    	      else if (data2[0] == 0x9f){
+    	    	  HAL_GPIO_WritePin(GPIOE, b_LED, GPIO_PIN_SET);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_WritePin(GPIOE, b_LED, GPIO_PIN_RESET);
+    	    	  HAL_Delay(1000);
+    	      }
+    	      else if (data2[0] == 0xcf){
+    	    	  HAL_GPIO_WritePin(GPIOE, select_LED, GPIO_PIN_SET);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_WritePin(GPIOE, select_LED, GPIO_PIN_RESET);
+    	    	  HAL_Delay(1000);
+    	      }
+    	      else if (data2[0] == 0xe7){
+    	    	  HAL_GPIO_WritePin(GPIOE, start_LED, GPIO_PIN_SET);
+    	    	  HAL_Delay(1000);
+    	    	  HAL_GPIO_WritePin(GPIOE, start_LED, GPIO_PIN_RESET);
+    	    	  HAL_Delay(1000);
+    	      }
+
 
     /* USER CODE BEGIN 3 */
   }
@@ -205,7 +233,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -276,7 +304,8 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CS_I2C_SPI_GPIO_Port, CS_I2C_SPI_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOE, CS_I2C_SPI_Pin|GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_14
+                          |GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(OTG_FS_PowerSwitchOn_GPIO_Port, OTG_FS_PowerSwitchOn_Pin, GPIO_PIN_SET);
@@ -285,11 +314,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOD, LD4_Pin|LD3_Pin|LD5_Pin|LD6_Pin
                           |Audio_RST_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(GPIOA, SPI1_SCK_Pin|SPI1_MISO_Pin|SPI1_MOSI_Pin, GPIO_PIN_RESET);
-
   HAL_GPIO_WritePin(SPI2_CLK_GPIO_Port, SPI2_CLK_Pin|SPI2_MOSI_Pin, GPIO_PIN_RESET);
 
-  HAL_GPIO_WritePin(SPI2_MISO_GPIO_Port, SPI2_MISO_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(SPI2_MISO_GPIO_Port, SPI2_MISO_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : CS_I2C_SPI_Pin */
   GPIO_InitStruct.Pin = CS_I2C_SPI_Pin;
@@ -332,6 +359,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(BOOT1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PE10 PE11 PE14 PE15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pin : CLK_IN_Pin */
   GPIO_InitStruct.Pin = CLK_IN_Pin;
@@ -392,29 +426,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(MEMS_INT2_GPIO_Port, &GPIO_InitStruct);
 
-  // Us for SPI1
-   GPIO_InitStruct.Pin = SPI1_SCK_Pin|SPI1_MISO_Pin|SPI1_MOSI_Pin;
-     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-     GPIO_InitStruct.Pull = GPIO_PULLUP;
-     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  // Us for SPI2
+          GPIO_InitStruct.Pin = SPI2_CLK_Pin|SPI2_MOSI_Pin;
+            GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+            GPIO_InitStruct.Pull = GPIO_PULLUP;
+            GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+            GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+            HAL_GPIO_Init(SPI2_CLK_GPIO_Port, &GPIO_InitStruct);
 
-
-     // Us for SPI2
-        GPIO_InitStruct.Pin = SPI2_CLK_Pin|SPI2_MOSI_Pin;
-          GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-          GPIO_InitStruct.Pull = GPIO_PULLUP;
-          GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-          GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-          HAL_GPIO_Init(SPI2_CLK_GPIO_Port, &GPIO_InitStruct);
-
-          GPIO_InitStruct.Pin = SPI2_MISO_Pin|SPI2_MOSI_Pin;
-                    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-                    GPIO_InitStruct.Pull = GPIO_PULLUP;
-                    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-                    GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-                    HAL_GPIO_Init(SPI2_MISO_GPIO_Port, &GPIO_InitStruct);
+            GPIO_InitStruct.Pin = SPI2_MISO_Pin|SPI2_MOSI_Pin;
+                      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+                      GPIO_InitStruct.Pull = GPIO_PULLUP;
+                      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+                      GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+                      HAL_GPIO_Init(SPI2_MISO_GPIO_Port, &GPIO_InitStruct);
 
 }
 
