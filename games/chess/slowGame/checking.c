@@ -22,11 +22,11 @@ int checkForCheckMate(Board *board, Move* currentMove){
 /* Function for checking if there is a check
 // 
 // 0 = no check
-// 1 = there is a check
+// 1 = there is a check on the input color
 //
-// Returns: winner value
+// Returns: check value
 */
-int isCheck(Board *board, Move* currentMove){
+int isCheck(Board *board, int checkingColor){
     return 0;
 }
 

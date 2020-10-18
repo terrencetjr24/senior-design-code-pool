@@ -59,10 +59,8 @@ int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves
     int *retMoves;
     *numOfMoves = 0;
 
-    unsigned char isPinned = isPinned(board,location); // 1 = vertical pin, 2 = non-vertical pin
-
     // If the current player is white
-    if(COLOR(board) == WHITE){
+    if(COLOR(board->color) == WHITE){
         // if the pawn is on the home row
         if(location / 8 == 1){
             if(board->squares[location + 8] == EMPTY && board->squares[location + 16] == EMPTY){
@@ -83,9 +81,6 @@ int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves
             moves[(*numOfMoves)++] = location + 8;
         }
 
-        // Checking if the piece is pinned against the king
-            // If it's pinned it still may be able to move forward if it's a vertical pin 
-
         // Checking the forward diagonals for capturable pieces
         if(location % 8 != 7 && COLOR(board->squares[location + 9]) != WHITE && board->squares[location + 9] != EMPTY){
             moves[(*numOfMoves)++] = location + 9;
@@ -96,7 +91,32 @@ int* validPawnMoves(Board* board, Move* lastMove, int location, int * numOfMoves
     }
     // If the current player is black
     else{
-
+        // If the pawn is on teh home row
+        if(location / 8 == 6){
+            if(board->squares[location - 8] == EMPTY && board->squares[location - 16] == EMPTY){
+                moves[(*numOfMoves)++] = location - 16;
+            }
+        }
+        // Checking for en passant capture
+        else if(location / 8 == 3 && lastMove->piece == PAWN && lastMove->src / 8 == 1 && lastMove->dst / 8 == 3) {
+            if(lastMove->dst == location + 1){
+                moves[(*numOfMoves)++] = location - 7;
+            }
+            if(lastMove->dst == location - 1){
+                moves[(*numOfMoves)++] = location - 9;
+            }
+        }
+        // ALWAYS, checking directly in front of the pawn
+        if(board->squares[location - 8] == EMPTY)  {
+            moves[(*numOfMoves)++] = location - 8;
+        }
+        // Checking the forward diagonals for capturable pieces
+        if(location % 8 != 7 && COLOR(board->squares[location - 7]) != BLACK && board->squares[location - 7] != EMPTY){
+            moves[(*numOfMoves)++] = location - 7;
+        }
+        if(location % 8 != 0 && COLOR(board->squares[location - 9]) != BLACK && board->squares[location - 9] != EMPTY){
+            moves[(*numOfMoves)++] = location - 9;
+        }
     }
 
     // Copy from holder array to the array being returned
@@ -195,11 +215,11 @@ Move * newMoveNode(Move * prevMove, int src, int dst, int selectedPiece, int pro
 /* Function to undo the entire last move and return the previous 
 // move to the tail of the move list
 //
+//
 // Returns: move node of the previous move
 */
 
 Move* undoLastMove(Board* board, Move* prevMove){
-
 
     // Maniupulate board as necessarry
         // Change color of the board (whichever user's turn it is)
@@ -207,38 +227,4 @@ Move* undoLastMove(Board* board, Move* prevMove){
 
 
     return NULL;
-}
-
-/*  Utility function
-// location = the current piece's location
-//
-// Returns: 0 = not pinned, 1 = vertical pin, 2 = horizontal pin, 3 = diagonal pin
-*/
-unsigned char isPinned(Board* board, int location){
-    unsigned char isPinned = 0; // 1 = vertical pin, 2 = horizontal pin, 3 = diagonal pin
-    int kingLocation;
-
-    if (board->color == WHITE){
-        kingLocation = board->whiteKingLocation;
-    } 
-    else{
-        kingLocation = board->blackKingLocation;
-    }
-
-    // Checking if piece and king are on same file
-    if ((location % 8) == (kingLocation % 8)){
-        //Check if there are pieces in between (black or white)
-        // If not, check opposite side for adversarial enemy pieces
-            //
-    }
-    // Checking if piece and king are on same row
-    else if ((location / 8) == (kingLocation / 8)){
-        //Check if there are pieces in between (black or white)
-    }
-    else if 
-    // Check if piece and king are on the same diagonal
-        //Check if there are pieces in between (black or white)
-
-
-    return isPinned;
 }

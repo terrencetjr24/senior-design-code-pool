@@ -64,11 +64,22 @@ int playGame(Board* board, Move * currentMove){
                             // Execute the new move on the actual board
                             // Saving the move into currentMove
                         currentMove = makeMove(board, currentMove, source, destination, selectedPiece, promotion);
-                        // Reset selectedPiece, source, destination, and promotion to -1
-                        selectedPiece = source = destination = promotion = RESET;
-                        // Then free the valid move list
-                        free(validMoves);
-                        state = checking;
+
+                        // After the move is made, check if it is invalid because of a check
+                        if (isCheck(board, currentMove->playerColor)){
+                            currentMove = undoLastMove(board, currentMove);
+                            // reset all the necessary values and game state
+                            destination = promotion = RESET;
+                            state = waitingForFirst;
+                        }
+                        else{
+                            // Reset selectedPiece, source, destination, and promotion to -1
+                            selectedPiece = source = destination = promotion = RESET;
+                            // Then free the valid move list
+                            free(validMoves);
+                            state = checking;
+                            goto checking;
+                        }
                     }
                     break;
                 // Hanlding pawn promotions
@@ -81,33 +92,40 @@ int playGame(Board* board, Move * currentMove){
                         // Execute the new move on the actual board
                         // Saving the move into currentMove
                     currentMove = makeMove(board, currentMove, source, destination, selectedPiece, promotion);
-                    // Reset selectedPiece, source, destination, and promotion to -1
-                    selectedPiece = source = destination = promotion = RESET;
-                    // Then free the valid move list
-                    free(validMoves);
-                    state = checking;
+
+                    // After the move is made, check if it is invalid because of a check
+                    if (isCheck(board, currentMove->playerColor)){
+                        currentMove = undoLastMove(board, currentMove);
+                        // reset all the necessary values and game state 
+                        state = waitingForSecond;
+                        destination = promotion = RESET;
+                    }
+                    else{
+                        // Reset selectedPiece, source, destination, and promotion to -1
+                        selectedPiece = source = destination = promotion = RESET;
+                        // Then free the valid move list
+                        free(validMoves);
+                        state = checking;
+                        goto checking;
+                    }
                     break;
-                    
+    // After every move these things will be checked
+checking:
+                    // Looking for checkmate
+                    winner = checkForCheckMate(board, currentMove);
+                    // Looking for stalemate
+                    winner = checkForStaleMate(board, currentMove);
+                    // Looking for castling priveleges
+                    checkForCastlingPriveleges(board);
+                    // Checking for 3 fold repitions
+                    winner = checkForRepetition(currentMove);
+                    // Looking for ...
+
+                    // Resetting state
+                    state = waitingForFirst;
+                    break;  
                 default:
                     printf("invalid state or jumped into checking state too early\n");
-            }
-            // After every move these things will be checked
-            if (state == checking){
-                // Looking for checkmate
-                    // look for check before jumping into this to avoid wasting time
-                if (currentMove->check == 1){
-                    winner = checkForCheckMate(board, currentMove);
-                }
-                // Looking for stalemate
-                winner = checkForStaleMate(board, currentMove);
-                // Looking for castling priveleges
-                checkForCastlingPriveleges(board);
-                // Checking for 3 fold repitions
-                winner = checkForRepetition(currentMove);
-                // Looking for ...
-
-                // Resetting state
-                state = waitingForFirst;
             }
         }
         // User wants to undo first half or second half of previous move

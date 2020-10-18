@@ -45,6 +45,5 @@ Move* makeMove(Board* board, Move* currentMove, int source, int destination, int
 
 Move * undoLastMove(Board* board, Move* prevMove);
 
-unsigned char isPinned(Board* board, int location);
 
 #endif
