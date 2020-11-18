@@ -2,6 +2,33 @@
 #include <stdlib.h>
 int audio_level; //Audio: 0 - low; 1 - med; 2 - high
 
+/*
+Cursor is signified by "|" character when run in the terminal. This needs highlighted in a different color
+The font for the heading, ex. "Welcome!" preferrably bigger 
+The whole thing could be preferrably centered
+The audio setting is only for demonstrating that our menu has the capability for the PSSC
+Same with game choice
+*/
+
+/*
+State Mapping
+0 - Welcome / Cursor on Game choice
+1 - Welcome / Cursor on Audio
+2 - Welcome / Cursor on Quit
+3 - Game choice / Cursor on choice 1
+4 - Game choice / Cursor on choice 2
+5 - Game choice / Cursor on back
+6 - Audio Setting / Cursor on low
+7 - Audio Setting / Cursor on med
+8 - Audio Setting / Cursor on high
+9 - Quit
+10 - Launch game 1
+11 - Launch game 2
+12 - Set Audio low
+13 - Set Audio med
+14 - Set Audio high
+*/
+
 void launch_game1(){
     printf("Launching Game 1");
     while(0);
